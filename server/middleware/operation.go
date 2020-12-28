@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+	"gin-vue-admin/model/request"
 	"gin-vue-admin/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -16,6 +17,7 @@ import (
 func OperationRecord() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var body []byte
+		var userId int
 		if c.Request.Method != http.MethodGet {
 			var err error
 			body, err = ioutil.ReadAll(c.Request.Body)
@@ -25,9 +27,15 @@ func OperationRecord() gin.HandlerFunc {
 				c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 			}
 		}
-		userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
-		if err != nil {
-			userId = 0
+		if claims, ok := c.Get("claims"); ok {
+			waitUse := claims.(*request.CustomClaims)
+			userId = int(waitUse.ID)
+		} else {
+			id, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+			if err != nil {
+				userId = 0
+			}
+			userId = id
 		}
 		record := model.SysOperationRecord{
 			Ip:     c.ClientIP(),
@@ -37,6 +45,11 @@ func OperationRecord() gin.HandlerFunc {
 			Body:   string(body),
 			UserID: userId,
 		}
+		// 存在某些未知错误 TODO
+		//values := c.Request.Header.Values("content-type")
+		//if len(values) >0 && strings.Contains(values[0], "boundary") {
+		//	record.Body = "file"
+		//}
 		writer := responseBodyWriter{
 			ResponseWriter: c.Writer,
 			body:           &bytes.Buffer{},

@@ -181,7 +181,7 @@ import {
   deleteBaseMenu,
   getBaseMenuById
 } from "@/api/menu";
-import infoList from "@/components/mixins/infoList";
+import infoList from "@/mixins/infoList";
 import icon from "@/view/superAdmin/menu/icon";
 export default {
   name: "Menus",
@@ -231,8 +231,8 @@ export default {
   },
   methods: {
     addParameter(form) {
-      if (!form.parameters){
-        form.parameters = []
+      if (!form.parameters) {
+        this.$set(form, "parameters", []);
       }
       form.parameters.push({
         type: "query",
@@ -316,6 +316,9 @@ export default {
               type: "success",
               message: "删除成功!"
             });
+            if (this.tableData.length == 1) {
+              this.page--;
+            }
             this.getTableData();
           }
         })

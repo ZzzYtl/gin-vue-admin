@@ -94,7 +94,7 @@ export default {
           return false;
         }
         md5 = SparkMD5.ArrayBuffer.hash(e.target.result, false);
-        
+
         file.uniqueIdentifier = md5;
         if (md5 != "") {
           const res = await checkFileMd5({ md5: md5 });
@@ -147,7 +147,7 @@ export default {
 .uploader-example {
   width: 880px;
   padding: 15px;
-  margin: 40px auto 0;
+  margin: 115px 15px 20px;
   font-size: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
