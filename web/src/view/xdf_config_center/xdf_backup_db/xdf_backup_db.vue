@@ -2,24 +2,24 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">  
-        <el-form-item label="机房名称">
-          <el-input placeholder="搜索条件" v-model="searchInfo.name"></el-input>
-        </el-form-item>      
+        <el-form-item label="IP">
+          <el-input placeholder="搜索条件" v-model="searchInfo.IP"></el-input>
+        </el-form-item>    
+        <el-form-item label="备库/延时备库">
+          <el-select v-model.trim="searchInfo.type">
+                <el-option
+                  v-for="item in backupDBTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+        </el-form-item>    
         <el-form-item>
           <el-button @click="onSubmit" type="primary">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button @click="openDialog" type="primary">新增机房</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-popover placement="top" v-model="deleteVisible" width="160">
-            <p>确定要删除吗？</p>
-              <div style="text-align: right; margin: 0">
-                <el-button @click="deleteVisible = false" size="mini" type="text">取消</el-button>
-                <el-button @click="onDelete" size="mini" type="primary">确定</el-button>
-              </div>
-            <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
-          </el-popover>
+          <el-button @click="openDialog" type="primary">新增备库</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -33,21 +33,25 @@
       tooltip-effect="dark"
     >
     <el-table-column type="selection" width="55"></el-table-column>
+    <el-table-column label="ID" prop="backup_id" width="120"></el-table-column> 
     
-    <el-table-column label="ID" prop="area_id" width="120"></el-table-column> 
+    <el-table-column label="IP" prop="IP" width="120"></el-table-column> 
     
-    <el-table-column label="机房名称" prop="name" width="120"></el-table-column> 
+    <el-table-column label="备库/延时备库" prop="type" width="120">
+      <template slot-scope="scope">
+            <span style="color:black" v-if="scope.row.type === 1">备库</span>
+            <span style="color:red" v-else-if="scope.row.type === 2">延时备库</span>
+      </template>
+    </el-table-column> 
     
-    <el-table-column label="状态" prop="status" width="120" v-if="0"></el-table-column> 
-    
-      <el-table-column label="按钮组">
+      <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button class="table-button" @click="updateArea(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
+          <el-button class="table-button" @click="updateBackUpDB(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
           <el-popover placement="top" width="160" v-model="scope.row.visible">
             <p>确定要删除吗？</p>
             <div style="text-align: right; margin: 0">
               <el-button size="mini" type="text" @click="scope.row.visible = false">取消</el-button>
-              <el-button type="primary" size="mini" @click="deleteArea(scope.row)">确定</el-button>
+              <el-button type="primary" size="mini" @click="deleteBackUpDB(scope.row)">确定</el-button>
             </div>
             <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference">删除</el-button>
           </el-popover>
@@ -66,10 +70,21 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="新增机房">
-      <el-form :model="formData" :rules="formRules" label-position="right" label-width="80px">
-         <el-form-item label="机房名称:" prop="name" label-width="100px">
-            <el-input v-model.trim="formData.name" clearable placeholder="请输入"></el-input>
+    <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="弹窗操作">
+      <el-form :model="formData"  :rules="formRules" label-position="right" label-width="120px">
+         <el-form-item label="IP:" prop="IP">
+            <el-input v-model="formData.IP" clearable placeholder="请输入" ></el-input>
+      </el-form-item>
+       
+         <el-form-item label="备库/延时备库:" prop="type">
+            <el-select v-model.trim="formData.type">
+                <el-option
+                  v-for="item in backupDBTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
       </el-form-item>
        </el-form>
       <div class="dialog-footer" slot="footer">
@@ -82,36 +97,47 @@
 
 <script>
 import {
-    createArea,
-    deleteArea,
-    deleteAreaByIds,
-    updateArea,
-    findArea,
-    getAreaList
-} from "@/api/xdf_area";  //  此处请自行替换地址
+    createBackUpDB,
+    deleteBackUpDB,
+    deleteBackUpDBByIds,
+    updateBackUpDB,
+    findBackUpDB,
+    getBackUpDBList
+} from "@/api/xdf_backup_db";  //  此处请自行替换地址
 import { formatTimeToStr } from "@/utils/date";
 import infoList from "@/mixins/infoList";
 export default {
-  name: "Area",
+  name: "BackUpDB",
   mixins: [infoList],
   data() {
     return {
-      listApi: getAreaList,
+      listApi: getBackUpDBList,
       dialogFormVisible: false,
       visible: false,
       type: "",
       deleteVisible: false,
       multipleSelection: [],formData: {
-            area_id:0,
-            name:"",
-            status:0,
-            
+            backup_id:0,
+            IP:"",           
       },
       formRules: {
-        name: [
-          {required: true, message: '请输入机房名称', trigger: 'blur'}
+        IP: [
+          {required: true, message: '请输入IP地址', trigger: 'blur'}
+        ],
+        type: [
+          {required: true, message: '请选择备库类型', trigger: 'blur'}
         ]
       },
+      backupDBTypes: [
+        {
+          value: 1,
+          label: '备库'
+        },
+        {
+          value: 2,
+          label: '延时从库'
+        }
+      ],
     };
   },
   filters: {
@@ -152,9 +178,9 @@ export default {
         }
         this.multipleSelection &&
           this.multipleSelection.map(item => {
-            ids.push(item.area_id)
+            ids.push(item.ID)
           })
-        const res = await deleteAreaByIds({ ids })
+        const res = await deleteBackUpDBByIds({ ids })
         if (res.code == 0) {
           this.$message({
             type: 'success',
@@ -167,26 +193,26 @@ export default {
           this.getTableData()
         }
       },
-    async updateArea(row) {
-      const res = await findArea({ area_id: row.area_id });
+    async updateBackUpDB(row) {
+      const res = await findBackUpDB({ backup_id: row.backup_id });
       this.type = "update";
       if (res.code == 0) {
-        this.formData = res.data.rearea;
+        this.formData = res.data.reBackDB;
         this.dialogFormVisible = true;
       }
     },
     closeDialog() {
       this.dialogFormVisible = false;
       this.formData = {
-          area_id:0,
-          name:"",
-          status:0,
+          backup_id:0,
+          IP:"",
+          type:0,
           
       };
     },
-    async deleteArea(row) {
+    async deleteBackUpDB(row) {
       this.visible = false;
-      const res = await deleteArea({ area_id: row.area_id });
+      const res = await deleteBackUpDB({ backup_id: row.backup_id });
       if (res.code == 0) {
         this.$message({
           type: "success",
@@ -199,18 +225,18 @@ export default {
       }
     },
     async enterDialog() {
-      this.$refs.apiForm.validate(async valid => {
+       this.$refs.apiForm.validate(async valid => {
         if (valid) {
           let res;
           switch (this.type) {
             case "create":
-              res = await createArea(this.formData);
+              res = await createBackUpDB(this.formData);
               break;
             case "update":
-              res = await updateArea(this.formData);
+              res = await updateBackUpDB(this.formData);
               break;
             default:
-              res = await createArea(this.formData);
+              res = await createBackUpDB(this.formData);
               break;
           }
           if (res.code == 0) {
@@ -222,7 +248,7 @@ export default {
             this.getTableData();
           }
         }
-      })
+       })
     },
     openDialog() {
       this.type = "create";

@@ -3,13 +3,9 @@
     <div>
       <span>Powered by</span>
       <span>
-      <a href="https://github.com/flipped-aurora/gin-vue-admin">gin-vue-admin</a>
+      <a href="https://ddd.com">产品研发中心运维部</a>
       </span>
       <el-divider direction="vertical"></el-divider>
-      <span>Copyright</span>
-      <span>
-      <a href="https://github.com/flipped-aurora">flipped-aurora团队</a>
-      </span>
     </div>
   </div>
 </template>

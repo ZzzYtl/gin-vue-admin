@@ -35,7 +35,7 @@ func DeleteArea(area model.Area) (err error) {
 //@return: err error
 
 func DeleteAreaByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]model.Area{},"id in ?",ids.Ids).Error
+	err = global.GVA_DB.Delete(&[]model.Area{},"area_id in ?",ids.Ids).Error
 	return err
 }
 
