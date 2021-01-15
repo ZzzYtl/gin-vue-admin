@@ -84,3 +84,12 @@ func GetDeptInfoInfoList(info request.DeptInfoSearch) (err error, list interface
 	err = db.Limit(limit).Offset(offset).Find(&depts).Error
 	return err, depts, total
 }
+
+func GetDeptList() (err error, list interface{}, total int64) {
+	// 创建db
+	db := global.GVA_DB.Model(&model.DeptInfo{})
+	var depts []model.DeptInfo
+	err = db.Count(&total).Error
+	err = db.Find(&depts).Error
+	return err, depts, total
+}

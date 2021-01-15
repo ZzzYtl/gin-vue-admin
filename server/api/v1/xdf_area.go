@@ -128,3 +128,15 @@ func GetAreaList(c *gin.Context) {
         }, "获取成功", c)
     }
 }
+
+func GetAllAreas(c *gin.Context) {
+	if err, list, total := service.GetAllAreas(); err != nil {
+		global.GVA_LOG.Error("获取失败", zap.Any("err", err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+		}, "获取成功", c)
+	}
+}

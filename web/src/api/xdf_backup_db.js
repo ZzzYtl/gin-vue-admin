@@ -98,3 +98,10 @@ export const createBackUpDB = (data) => {
          params
      })
  }
+
+ export const getAllBackUpDBs = () => {
+    return service({
+        url: "/BackDB/getAllBackUpDBs",
+        method: 'post',
+    })
+}

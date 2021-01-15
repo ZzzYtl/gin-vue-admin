@@ -50,6 +50,9 @@ func Routers() *gin.Engine {
 		router.InitAreaRouter(PrivateGroup)					 // 机房管理相关接口
 		router.InitBackUpDBRouter(PrivateGroup)				 // 备库管理相关接口
 		router.InitDeptInfoRouter(PrivateGroup)			     // 业务线相关接口
+		router.InitNodeRouter(PrivateGroup)					 // 集群相关接口
+		router.InitTagRouter(PrivateGroup)
+		router.InitDataBaseInfoRouter(PrivateGroup)
 	}
 	global.GVA_LOG.Info("router register success")
 	return Router

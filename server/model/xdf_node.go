@@ -2,14 +2,17 @@
 package model
 
 // 如果含有time.Time 请自行import time包
-type Tag struct {
-	TagID  int `json:"tag_id" form:"tag_id" gorm:"primarykey;AUTO_INCREMENT;column:tag_id;comment:;type:int;size:10;"`
-	Name  string `json:"name" form:"name" gorm:"column:name; unique; comment:;type:char(30);size:30;"`
+type Node struct {
+      NodeID  int `json:"node_id" form:"node_id" gorm:"primarykey;AUTO_INCREMENT;column:node_id;comment:;type:int;size:10;"`
+      TagID  int `json:"tag_id" form:"tag_id" gorm:"column:tag_id;comment:;type:int;size:10;"`
+      IP  string `json:"ip" form:"ip" gorm:"column:ip;comment:;type:char(15);size:15;"`
+      RoleID  int `json:"role_id" form:"role_id" gorm:"column:role_id;comment:;type:smallint;size:3;"`
+      AreaID  int `json:"area_id" form:"area_id" gorm:"column:area_id;comment:;type:smallint;size:3;"`
 }
 
 
-func (Tag) TableName() string {
-	return "tag_info"
+func (Node) TableName() string {
+  return "node_info"
 }
 
 

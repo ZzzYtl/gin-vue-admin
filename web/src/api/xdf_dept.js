@@ -98,3 +98,10 @@ export const createDeptInfo = (data) => {
          params
      })
  }
+
+ export const getAllDepts = () => {
+    return service({
+        url: "/dept/getAllDepts",
+        method: 'post',
+    })
+}

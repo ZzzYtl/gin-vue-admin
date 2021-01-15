@@ -10,37 +10,55 @@ import (
     "go.uber.org/zap"
 )
 
-// @Tags BackUpDB
-// @Summary 创建BackUpDB
+// @Tags Node
+// @Summary 创建Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.BackUpDB true "创建BackUpDB"
+// @Param data body model.Node true "创建Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /BackDB/createBackUpDB [post]
-func CreateBackUpDB(c *gin.Context) {
-	var BackDB model.BackUpDB
-	_ = c.ShouldBindJSON(&BackDB)
-	if err := service.CreateBackUpDB(BackDB); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
-		response.FailWithMessage("创建失败", c)
-	} else {
-		response.OkWithMessage("创建成功", c)
-	}
+// @Router /node/createNode [post]
+type CreateClusterForm struct {
+	ClusterName string `json:"cluster_name"`
+	Nodes []model.Node `json:"nodes"`
 }
 
-// @Tags BackUpDB
-// @Summary 删除BackUpDB
+func CreateNode(c *gin.Context) {
+	var form CreateClusterForm
+	_ = c.ShouldBindJSON(&form)
+
+	tag := model.Tag{
+		Name:  form.ClusterName,
+	}
+	tagId, err := service.CreateTag(tag);
+	if err != nil {
+		global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
+		response.FailWithMessage("创建失败", c)
+	}
+
+	for _, v := range form.Nodes {
+		v.TagID = tagId
+		if err := service.CreateNode(v); err != nil {
+			global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
+			response.FailWithMessage("创建失败", c)
+			break
+		}
+	}
+	response.OkWithMessage("创建成功", c)
+}
+
+// @Tags Node
+// @Summary 删除Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.BackUpDB true "删除BackUpDB"
+// @Param data body model.Node true "删除Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /BackDB/deleteBackUpDB [delete]
-func DeleteBackUpDB(c *gin.Context) {
-	var BackDB model.BackUpDB
-	_ = c.ShouldBindJSON(&BackDB)
-	if err := service.DeleteBackUpDB(BackDB); err != nil {
+// @Router /node/deleteNode [delete]
+func DeleteNode(c *gin.Context) {
+	var node model.Node
+	_ = c.ShouldBindJSON(&node)
+	if err := service.DeleteNode(node); err != nil {
         global.GVA_LOG.Error("删除失败!", zap.Any("err", err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -48,18 +66,18 @@ func DeleteBackUpDB(c *gin.Context) {
 	}
 }
 
-// @Tags BackUpDB
-// @Summary 批量删除BackUpDB
+// @Tags Node
+// @Summary 批量删除Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.IdsReq true "批量删除BackUpDB"
+// @Param data body request.IdsReq true "批量删除Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
-// @Router /BackDB/deleteBackUpDBByIds [delete]
-func DeleteBackUpDBByIds(c *gin.Context) {
+// @Router /node/deleteNodeByIds [delete]
+func DeleteNodeByIds(c *gin.Context) {
 	var IDS request.IdsReq
     _ = c.ShouldBindJSON(&IDS)
-	if err := service.DeleteBackUpDBByIds(IDS); err != nil {
+	if err := service.DeleteNodeByIds(IDS); err != nil {
         global.GVA_LOG.Error("批量删除失败!", zap.Any("err", err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -67,18 +85,18 @@ func DeleteBackUpDBByIds(c *gin.Context) {
 	}
 }
 
-// @Tags BackUpDB
-// @Summary 更新BackUpDB
+// @Tags Node
+// @Summary 更新Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.BackUpDB true "更新BackUpDB"
+// @Param data body model.Node true "更新Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /BackDB/updateBackUpDB [put]
-func UpdateBackUpDB(c *gin.Context) {
-	var BackDB model.BackUpDB
-	_ = c.ShouldBindJSON(&BackDB)
-	if err := service.UpdateBackUpDB(BackDB); err != nil {
+// @Router /node/updateNode [put]
+func UpdateNode(c *gin.Context) {
+	var node model.Node
+	_ = c.ShouldBindJSON(&node)
+	if err := service.UpdateNode(node); err != nil {
         global.GVA_LOG.Error("更新失败!", zap.Any("err", err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -86,37 +104,37 @@ func UpdateBackUpDB(c *gin.Context) {
 	}
 }
 
-// @Tags BackUpDB
-// @Summary 用id查询BackUpDB
+// @Tags Node
+// @Summary 用id查询Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.BackUpDB true "用id查询BackUpDB"
+// @Param data body model.Node true "用id查询Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /BackDB/findBackUpDB [get]
-func FindBackUpDB(c *gin.Context) {
-	var BackDB model.BackUpDB
-	_ = c.ShouldBindQuery(&BackDB)
-	if err, reBackDB := service.GetBackUpDB(BackDB.BackUpID); err != nil {
+// @Router /node/findNode [get]
+func FindNode(c *gin.Context) {
+	var node model.Node
+	_ = c.ShouldBindQuery(&node)
+	if err, renode := service.GetNode(node.NodeID); err != nil {
         global.GVA_LOG.Error("查询失败!", zap.Any("err", err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(gin.H{"reBackDB": reBackDB}, c)
+		response.OkWithData(gin.H{"renode": renode}, c)
 	}
 }
 
-// @Tags BackUpDB
-// @Summary 分页获取BackUpDB列表
+// @Tags Node
+// @Summary 分页获取Node列表
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.BackUpDBSearch true "分页获取BackUpDB列表"
+// @Param data body request.NodeSearch true "分页获取Node列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /BackDB/getBackUpDBList [get]
-func GetBackUpDBList(c *gin.Context) {
-	var pageInfo request.BackUpDBSearch
+// @Router /node/getNodeList [get]
+func GetNodeList(c *gin.Context) {
+	var pageInfo request.NodeSearch
 	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := service.GetBackUpDBInfoList(pageInfo); err != nil {
+	if err, list, total := service.GetNodeInfoList(pageInfo); err != nil {
 	    global.GVA_LOG.Error("获取失败", zap.Any("err", err))
         response.FailWithMessage("获取失败", c)
     } else {
@@ -127,16 +145,4 @@ func GetBackUpDBList(c *gin.Context) {
             PageSize: pageInfo.PageSize,
         }, "获取成功", c)
     }
-}
-
-func GetAllBackUpDBs(c *gin.Context) {
-	if err, list, total := service.GetAllBackUpDBs(); err != nil {
-		global.GVA_LOG.Error("获取失败", zap.Any("err", err))
-		response.FailWithMessage("获取失败", c)
-	} else {
-		response.OkWithDetailed(response.PageResult{
-			List:     list,
-			Total:    total,
-		}, "获取成功", c)
-	}
 }

@@ -1,107 +1,100 @@
 import service from '@/utils/request'
 
-// @Tags Area
-// @Summary 创建Area
+// @Tags Node
+// @Summary 创建Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Area true "创建Area"
+// @Param data body model.Node true "创建Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /area/createArea [post]
-export const createArea = (data) => {
+// @Router /node/createNode [post]
+export const createNode = (data) => {
      return service({
-         url: "/area/createArea",
+         url: "/node/createNode",
          method: 'post',
          data
      })
  }
 
 
-// @Tags Area
-// @Summary 删除Area
+// @Tags Node
+// @Summary 删除Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Area true "删除Area"
+// @Param data body model.Node true "删除Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /area/deleteArea [delete]
- export const deleteArea = (data) => {
+// @Router /node/deleteNode [delete]
+ export const deleteNode = (data) => {
      return service({
-         url: "/area/deleteArea",
+         url: "/node/deleteNode",
          method: 'delete',
          data
      })
  }
 
-// @Tags Area
-// @Summary 删除Area
+// @Tags Node
+// @Summary 删除Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.IdsReq true "批量删除Area"
+// @Param data body request.IdsReq true "批量删除Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /area/deleteArea [delete]
- export const deleteAreaByIds = (data) => {
+// @Router /node/deleteNode [delete]
+ export const deleteNodeByIds = (data) => {
      return service({
-         url: "/area/deleteAreaByIds",
+         url: "/node/deleteNodeByIds",
          method: 'delete',
          data
      })
  }
 
-// @Tags Area
-// @Summary 更新Area
+// @Tags Node
+// @Summary 更新Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Area true "更新Area"
+// @Param data body model.Node true "更新Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /area/updateArea [put]
- export const updateArea = (data) => {
+// @Router /node/updateNode [put]
+ export const updateNode = (data) => {
      return service({
-         url: "/area/updateArea",
+         url: "/node/updateNode",
          method: 'put',
          data
      })
  }
 
 
-// @Tags Area
-// @Summary 用id查询Area
+// @Tags Node
+// @Summary 用id查询Node
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Area true "用id查询Area"
+// @Param data body model.Node true "用id查询Node"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /area/findArea [get]
- export const findArea = (params) => {
+// @Router /node/findNode [get]
+ export const findNode = (params) => {
      return service({
-         url: "/area/findArea",
+         url: "/node/findNode",
          method: 'get',
          params
      })
  }
 
 
-// @Tags Area
-// @Summary 分页获取Area列表
+// @Tags Node
+// @Summary 分页获取Node列表
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.PageInfo true "分页获取Area列表"
+// @Param data body request.PageInfo true "分页获取Node列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /area/getAreaList [get]
- export const getAreaList = (params) => {
+// @Router /node/getNodeList [get]
+ export const getNodeList = (params) => {
      return service({
-         url: "/area/getAreaList",
+         url: "/node/getNodeList",
          method: 'get',
          params
      })
  }
-
- export const getAllAreas = () => {
-    return service({
-        url: "/area/getAllAreas",
-        method: 'post',
-    })
-}

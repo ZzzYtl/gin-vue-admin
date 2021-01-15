@@ -84,3 +84,12 @@ func GetBackUpDBInfoList(info request.BackUpDBSearch) (err error, list interface
 	err = db.Limit(limit).Offset(offset).Find(&BackDBs).Error
 	return err, BackDBs, total
 }
+
+func GetAllBackUpDBs() (err error, list interface{}, total int64) {
+	// 创建db
+	db := global.GVA_DB.Model(&model.BackUpDB{})
+	var BackDBs []model.BackUpDB
+	err = db.Count(&total).Error
+	err = db.Find(&BackDBs).Error
+	return err, BackDBs, total
+}

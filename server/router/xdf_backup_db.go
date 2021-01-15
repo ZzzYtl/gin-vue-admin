@@ -15,5 +15,6 @@ func InitBackUpDBRouter(Router *gin.RouterGroup) {
 		BackUpDBRouter.PUT("updateBackUpDB", v1.UpdateBackUpDB)    // 更新BackUpDB
 		BackUpDBRouter.GET("findBackUpDB", v1.FindBackUpDB)        // 根据ID获取BackUpDB
 		BackUpDBRouter.GET("getBackUpDBList", v1.GetBackUpDBList)  // 获取BackUpDB列表
+		BackUpDBRouter.POST("getAllBackUpDBs", v1.GetAllBackUpDBs)  // 获取BackUpDB列表
 	}
 }

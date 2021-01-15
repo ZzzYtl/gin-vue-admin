@@ -81,3 +81,12 @@ func GetAreaInfoList(info request.AreaSearch) (err error, list interface{}, tota
 	err = db.Limit(limit).Offset(offset).Find(&areas).Error
 	return err, areas, total
 }
+
+func GetAllAreas() (err error, list interface{}, total int64) {
+	// 创建db
+	db := global.GVA_DB.Model(&model.Area{})
+	var areas []model.Area
+	err = db.Count(&total).Error
+	err = db.Find(&areas).Error
+	return err, areas, total
+}

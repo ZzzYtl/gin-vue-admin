@@ -15,5 +15,6 @@ func InitAreaRouter(Router *gin.RouterGroup) {
 		AreaRouter.PUT("updateArea", v1.UpdateArea)    // 更新Area
 		AreaRouter.GET("findArea", v1.FindArea)        // 根据ID获取Area
 		AreaRouter.GET("getAreaList", v1.GetAreaList)  // 获取Area列表
+		AreaRouter.POST("getAllAreas", v1.GetAllAreas)
 	}
 }

@@ -15,5 +15,6 @@ func InitDeptInfoRouter(Router *gin.RouterGroup) {
 		DeptInfoRouter.PUT("updateDeptInfo", v1.UpdateDeptInfo)    // 更新DeptInfo
 		DeptInfoRouter.GET("findDeptInfo", v1.FindDeptInfo)        // 根据ID获取DeptInfo
 		DeptInfoRouter.GET("getDeptInfoList", v1.GetDeptInfoList)  // 获取DeptInfo列表
+		DeptInfoRouter.POST("getAllDepts", v1.GetAllDepts)
 	}
 }

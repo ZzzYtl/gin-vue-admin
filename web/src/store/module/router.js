@@ -44,6 +44,14 @@ export const router = {
             }]
             const asyncRouterRes = await asyncMenu()
             const asyncRouter = asyncRouterRes.data.menus
+            // asyncRouter.push({
+            //     path: 'dbCluster/create',
+            //     hidden: true,
+            //     meta: {
+            //         title: "迷路了*。*",
+            //     },
+            //     component: 'view/xdf_db_cluster/xdf_node/xdf_nodeForm.vue'
+            // })
             asyncRouter.push({
                 path: "404",
                 name: "404",
@@ -58,7 +66,6 @@ export const router = {
             baseRouter.push({
                 path: '*',
                 redirect: '/layout/404'
-
             })
             asyncRouterHandle(baseRouter)
             commit('setAsyncRouter', baseRouter)
