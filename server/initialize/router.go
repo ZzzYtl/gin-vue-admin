@@ -27,6 +27,7 @@ func Routers() *gin.Engine {
 	PublicGroup := Router.Group("")
 	{
 		router.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
+		router.InitDBAPI(PublicGroup)
 	}
 	PrivateGroup := Router.Group("")
 	PrivateGroup.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
@@ -53,6 +54,9 @@ func Routers() *gin.Engine {
 		router.InitNodeRouter(PrivateGroup)					 // 集群相关接口
 		router.InitTagRouter(PrivateGroup)
 		router.InitDataBaseInfoRouter(PrivateGroup)
+		router.InitSentinelInfoRouter(PrivateGroup)
+		router.InitSentinelDBClusterInfoRouter(PrivateGroup)
+		router.InitSentinelClusterRouter(PrivateGroup)
 	}
 	global.GVA_LOG.Info("router register success")
 	return Router

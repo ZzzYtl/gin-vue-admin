@@ -98,3 +98,11 @@ export const createDataBaseInfo = (data) => {
          params
      })
  }
+
+ export const getAllDBs = (data) => {
+    return service({
+        url: "/DBInfo/getAllDBs",
+        method: 'post',
+        data
+    })
+}

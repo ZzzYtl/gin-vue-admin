@@ -141,7 +141,6 @@
                 :props="{label:'name',value:'tag_id',emitPath:false}" 
                 v-model="formData.tag_id">
               </el-cascader>
-          </el-input>
       </el-form-item>
        
          <el-form-item label="实例名:">

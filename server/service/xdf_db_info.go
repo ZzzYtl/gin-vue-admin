@@ -96,3 +96,12 @@ func GetDataBaseInfoInfoList(info request.DataBaseInfoSearch) (err error, list i
 	err = db.Limit(limit).Offset(offset).Find(&DBInfos).Error
 	return err, DBInfos, total
 }
+
+func GetDBList() (err error, list interface{}, total int64) {
+	// 创建db
+	db := global.GVA_DB.Model(&model.DataBaseInfo{})
+	var dbs []model.DataBaseInfo
+	err = db.Count(&total).Error
+	err = db.Find(&dbs).Error
+	return err, dbs, total
+}

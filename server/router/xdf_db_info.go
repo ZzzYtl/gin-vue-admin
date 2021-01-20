@@ -15,5 +15,6 @@ func InitDataBaseInfoRouter(Router *gin.RouterGroup) {
 		DataBaseInfoRouter.PUT("updateDataBaseInfo", v1.UpdateDataBaseInfo)    // 更新DataBaseInfo
 		DataBaseInfoRouter.GET("findDataBaseInfo", v1.FindDataBaseInfo)        // 根据ID获取DataBaseInfo
 		DataBaseInfoRouter.GET("getDataBaseInfoList", v1.GetDataBaseInfoList)  // 获取DataBaseInfo列表
+		DataBaseInfoRouter.POST("getAllDBs", v1.GetAllDBs)
 	}
 }

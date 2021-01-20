@@ -22,7 +22,6 @@ func (DataBaseInfo) TableName() string {
   return "cluster_info"
 }
 
-
 // 如果使用工作流功能 需要打开下方注释 并到initialize的workflow中进行注册 且必须指定TableName
 // type DataBaseInfoWorkflow struct {
 // 	// 工作流操作结构体
