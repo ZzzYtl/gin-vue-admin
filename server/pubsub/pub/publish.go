@@ -1,34 +1,27 @@
-package pubsub
+package pub
 
 import (
 	"context"
-	"fmt"
 	publish "gin-vue-admin/pubsub/protocal"
 	"google.golang.org/grpc"
 	"log"
-	"time"
 )
 
 type Puber struct {
 	pubClient publish.DBMSClient
 }
 
-func (puber *Puber)Pub()  {
-	for {
-		resp, err := puber.pubClient.Publish(context.Background(), &publish.PublishRequest{
-			Topic: &publish.Topic{
-				Name: "golang",
-			},
-			Messages: &publish.PubsubMessage{
-				Data: []byte("welcome!"),
-			},
-		})
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(resp.MessageId)
-		time.Sleep(time.Second)
+func (puber *Puber)Pub(sentinelClusterID uint32, message *publish.PubsubMessage) error {
+	_, err := puber.pubClient.Publish(context.Background(), &publish.PublishRequest{
+		Topic: &publish.Topic{
+			SentinelClusterId: sentinelClusterID,
+		},
+		Message: message,
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
+	return err
 }
 
 func CreatePuber()  *Puber {

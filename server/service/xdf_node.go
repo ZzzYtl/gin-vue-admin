@@ -24,7 +24,21 @@ func CreateNode(node model.Node) (err error) {
 //@return: err error
 
 func DeleteNode(node model.Node) (err error) {
+	findErr := global.GVA_DB.Where("node_id = ?", node.NodeID).First(&node).Error
 	err = global.GVA_DB.Delete(&node).Error
+	if err == nil {
+		if findErr == nil {
+			db := global.GVA_DB.Model(&model.Node{})
+			var total int64
+			db = db.Where("`tag_id` = ?",node.TagID)
+			countErr := db.Count(&total).Error
+			if countErr == nil {
+				if total == 0 {
+					global.GVA_DB.Delete(&model.Tag{TagID: node.TagID})
+				}
+			}
+		}
+	}
 	return err
 }
 

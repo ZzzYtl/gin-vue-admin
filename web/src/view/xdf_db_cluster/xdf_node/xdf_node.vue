@@ -13,14 +13,9 @@
           <el-input placeholder="搜索条件" v-model="searchInfo.ip"></el-input>
         </el-form-item>    
         <el-form-item label="角色">
-          <el-select v-model.trim="searchInfo.role_id">
-                <el-option
-                  v-for="item in roleTypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+          <el-select v-model="searchInfo.role_id" placeholder="请选择" clearable>
+            <el-option v-for="(item,key) in db_roleOptions" :key="key" :label="item.label" :value="item.value"></el-option>
+          </el-select>
         </el-form-item>    
         <el-form-item label="机房">
           <el-cascader 
@@ -42,7 +37,9 @@
                 <el-button @click="deleteVisible = false" size="mini" type="text">取消</el-button>
                 <el-button @click="onDelete" size="mini" type="primary">确定</el-button>
               </div>
+            <!--
             <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
+            -->
           </el-popover>
         </el-form-item>
       </el-form>
@@ -56,8 +53,9 @@
       style="width: 100%"
       tooltip-effect="dark"
     >
+    <!--
     <el-table-column type="selection" width="55"></el-table-column>
-    
+    -->
     <el-table-column label="ID" prop="node_id" width="120"></el-table-column> 
     
     <el-table-column label="集群名称" prop="tag_id" width="120">
@@ -74,9 +72,10 @@
     
     <el-table-column label="角色" prop="role_id" width="120">
       <template slot-scope="scope">
-              <span style="color:red" v-if="scope.row.role_id === 1">主</span>
-              <span style="color:black" v-else-if="scope.row.role_id === 2">从</span>
-        </template>
+        <div>
+          {{filterDict(scope.row.role_id,"db_role")}}
+        </div>      
+      </template>
     </el-table-column> 
     
     <el-table-column label="机房" prop="area_id" width="120">
@@ -114,19 +113,19 @@
     ></el-pagination>
 
     <el-dialog :before-close="closeCreateDialog" :visible.sync="createDialogFormVisible" title="新增集群">
-      <el-form :model="createData"  label-position="right" label-width="80px">
-         <el-form-item label="集群名称:">
-            <el-input v-model="createData.cluster_name" clearable placeholder="请输入" ></el-input>
-      </el-form-item>
+      <el-form :model="createData" :rules="formRules"  label-position="right" label-width="90px">
+        <el-form-item label="集群名称:" prop="cluster_name">
+          <el-input v-model="createData.cluster_name" clearable placeholder="请输入" ></el-input>
+        </el-form-item>
        
-      <el-row>
+        <el-row>
           <el-col :span="12">
-              <el-form-item label="master_ip:">
-                <el-input v-model="createData.master_ip" clearable placeholder="请输入" ></el-input>
-          </el-form-item>
+            <el-form-item label="master_ip:" prop="master_ip">
+              <el-input v-model="createData.master_ip" clearable placeholder="请输入" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="所属机房:">
+            <el-form-item label="所属机房:" prop="area_id">
               <el-cascader 
                 :options="areas"
                 :props="{label:'name',value:'area_id',emitPath:false}" 
@@ -134,15 +133,15 @@
               </el-cascader>
             </el-form-item>
           </el-col>
-      </el-row>
-      <el-row>
+        </el-row>
+        <el-row>
           <el-col :span="12">
-              <el-form-item label="slave_ip:">
+              <el-form-item label="slave_ip:" prop="slave1_ip">
                 <el-input v-model="createData.slave1_ip" clearable placeholder="请输入" ></el-input>
-          </el-form-item>
+              </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="所属机房:">
+            <el-form-item label="所属机房:" prop="area_id">
               <el-cascader 
                 :options="areas"
                 :props="{label:'name',value:'area_id',emitPath:false}" 
@@ -150,16 +149,16 @@
               </el-cascader>
             </el-form-item>
           </el-col>
-      </el-row>
+        </el-row>
 
-      <el-row>
+        <el-row>
           <el-col :span="12">
-              <el-form-item label="slave_ip:">
-                <el-input v-model="createData.slave2_ip" clearable placeholder="请输入" ></el-input>
+            <el-form-item label="slave_ip:" prop="slave2_ip">
+              <el-input v-model="createData.slave2_ip" clearable placeholder="请输入" ></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="所属机房:">
+            <el-form-item label="所属机房:" prop="area_id">
               <el-cascader 
                 :options="areas"
                 :props="{label:'name',value:'area_id',emitPath:false}" 
@@ -176,23 +175,18 @@
     </el-dialog>
 
     <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="更新">
-      <el-form :model="formData"  label-position="right" label-width="80px">
-         <el-form-item label="ip:">
-            <el-input v-model="formData.ip" clearable placeholder="请输入IP" ></el-input>
-      </el-form-item>
+      <el-form :model="formData" :rules="formRules"  label-position="right" label-width="90px">
+        <el-form-item label="ip:" prop="ip">
+          <el-input v-model="formData.ip" clearable placeholder="请输入IP" ></el-input>
+        </el-form-item>
        
 
-      <el-form-item label="角色:">
-           <el-select v-model.trim="formData.role_id">
-                <el-option
-                  v-for="item in roleTypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+        <el-form-item label="角色:" prop="role_id">
+          <el-select v-model="formData.role_id" placeholder="请选择" clearable>
+            <el-option v-for="(item,key) in db_roleOptions" :key="key" :label="item.label" :value="item.value"></el-option>
+          </el-select>
         </el-form-item>    
-      <el-form-item label="所属机房:">
+      <el-form-item label="所属机房:" prop="area_id">
         <el-cascader 
           :options="areas"
           :props="{label:'name',value:'area_id',emitPath:false}" 
@@ -250,6 +244,7 @@ export default {
       areas : Areas,
       deleteVisible: false,
       multipleSelection: [],
+      db_roleOptions: [],
       createData: {
           cluster_name: "",
           master_ip:"",
@@ -266,6 +261,31 @@ export default {
             role_id:0,
             area_id:0,
             
+      },
+
+      formRules: {
+        cluster_name: [
+          {required: true, message: '请输入集群名称', trigger: 'blur'}
+        ],
+        master_ip: [
+          {required: true, message: '请选主库地址', trigger: 'blur'}
+        ],
+        area_id: [
+          {required: true, message: '请选择机房', trigger: 'blur'}
+        ],
+        slave1_ip: [
+          {required: true, message: '请输入从库地址', trigger: 'blur'}
+        ],
+        slave2_ip: [
+          {required: true, message: '请输入从库地址', trigger: 'blur'}
+        ],
+        ip: [
+          {required: true, message: '请输入ip', trigger: 'blur'}
+        ],
+        role_id: [
+          {required: true, message: '请选择角色', trigger: 'blur'}
+        ]
+
       },
  
       roleTypes: [
@@ -475,6 +495,7 @@ closeCreateDialog() {
       this.areas = rst2.data.list
       Areas = this.areas
     }
+    await this.getDict("db_role");
     await this.getTableData();
 }
 };

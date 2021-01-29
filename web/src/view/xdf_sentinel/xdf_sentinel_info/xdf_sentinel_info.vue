@@ -28,7 +28,9 @@
                 <el-button @click="deleteVisible = false" size="mini" type="text">取消</el-button>
                 <el-button @click="onDelete" size="mini" type="primary">确定</el-button>
               </div>
+            <!--
             <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
+            -->
           </el-popover>
         </el-form-item>
       </el-form>
@@ -42,8 +44,9 @@
       style="width: 100%"
       tooltip-effect="dark"
     >
+    <!--
     <el-table-column type="selection" width="55"></el-table-column>
-    
+    -->
     <el-table-column label="ID" prop="sentinel_id" width="120"></el-table-column> 
     
     <el-table-column label="RunID" prop="run_id" width="120"></el-table-column> 
@@ -66,7 +69,10 @@
     
       <el-table-column label="按钮组">
         <template slot-scope="scope">
-          <el-button class="table-button" @click="updateSentinelInfo(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
+          
+          <!-- 
+            <el-button class="table-button" @click="updateSentinelInfo(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
+          -->
           <el-popover placement="top" width="160" v-model="scope.row.visible">
             <p>确定要删除吗？</p>
             <div style="text-align: right; margin: 0">
@@ -91,44 +97,44 @@
     ></el-pagination>
 
     <el-dialog :before-close="closeCreateDialog" :visible.sync="createDialogFormVisible" title="新增哨兵集群">
-      <el-form :model="createData"  label-position="right" label-width="120px">
-         <el-form-item label="哨兵集群名称:">
+      <el-form :model="createData" :rules="formRules"  label-position="right" label-width="120px">
+         <el-form-item label="哨兵集群名称:" prop="cluster_name">
             <el-input v-model="createData.cluster_name" clearable placeholder="请输入" ></el-input>
       </el-form-item>
        
       <el-row>
           <el-col :span="12">
-              <el-form-item label="sentinel_ip:">
+              <el-form-item label="sentinel_ip:" prop="sentinel1_ip">
                 <el-input v-model="createData.sentinel1_ip" clearable placeholder="请输入" ></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="sentinel_port:">
-                <el-input v-model="createData.sentinel1_port" clearable placeholder="请输入" ></el-input>
+            <el-form-item label="sentinel_port:" prop="sentinel1_port">
+                <el-input v-model="createData.sentinel1_port" onkeyup="value=value.replace(/[^\d]/g,'')" clearable placeholder="请输入" ></el-input>
             </el-form-item>
           </el-col>
       </el-row>
       <el-row>
           <el-col :span="12">
-              <el-form-item label="sentinel_ip:">
-                <el-input v-model="createData.sentinel2_ip" clearable placeholder="请输入" ></el-input>
+              <el-form-item label="sentinel_ip:" prop="sentinel2_ip">
+                <el-input v-model="createData.sentinel2_ip" onkeyup="value=value.replace(/[^\d]/g,'')" clearable placeholder="请输入" ></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="sentinel_port:">
-                <el-input v-model="createData.sentinel2_port" clearable placeholder="请输入" ></el-input>
+            <el-form-item label="sentinel_port:" prop="sentinel2_port">
+                <el-input v-model="createData.sentinel2_port"  onkeyup="value=value.replace(/[^\d]/g,'')" clearable placeholder="请输入" ></el-input>
             </el-form-item>
           </el-col>
       </el-row>
 
       <el-row>
           <el-col :span="12">
-              <el-form-item label="sentinel_ip:">
+              <el-form-item label="sentinel_ip:" prop="sentinel3_ip">
                 <el-input v-model="createData.sentinel3_ip" clearable placeholder="请输入" ></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="sentinel_port:">
+            <el-form-item label="sentinel_port:" prop="sentinel3_port">
                 <el-input v-model="createData.sentinel3_port" clearable placeholder="请输入" ></el-input>
             </el-form-item>
           </el-col>
@@ -193,18 +199,43 @@ export default {
       createData: {
           cluster_name: "",
           sentinel1_ip:"",
-          sentinel1_port: 0,
+          sentinel1_port: undefined,
           sentinel2_ip:"",
-          sentinel2_port: 0,
+          sentinel2_port: undefined,
           sentinel3_ip:"",
-          sentinel3_port: 0,
+          sentinel3_port: undefined,
       },
       multipleSelection: [],formData: {
             ip:"",
             port:0,    
+      },
+      formRules: {
+        cluster_name: [
+          {required: true, message: '请输入集群名称', trigger: 'blur'}
+        ],
+        sentinel1_ip: [
+          {required: true, message: '请选哨兵地址', trigger: 'blur'}
+        ],
+        sentinel1_port: [
+          {required: true, message: '请输入哨兵端口', trigger: 'blur'}
+        ],
+         sentinel2_ip: [
+          {required: true, message: '请选哨兵地址', trigger: 'blur'}
+        ],
+        sentinel2_port: [
+          {required: true, message: '请输入哨兵端口', trigger: 'blur'}
+        ],
+         sentinel3_ip: [
+          {required: true, message: '请选哨兵地址', trigger: 'blur'}
+        ],
+        sentinel3_port: [
+          {required: true, message: '请输入哨兵端口', trigger: 'blur'}
+        ]
       }
+      
     };
   },
+
   filters: {
     formatDate: function(time) {
       if (time != null && time != "") {
@@ -283,11 +314,11 @@ export default {
       this.createData = {
           cluster_name: "",
           sentinel1_ip:"",
-          sentinel1_port: 0,
+          sentinel1_port: undefined,
           sentinel2_ip:"",
-          sentinel2_port: 0,
+          sentinel2_port: undefined,
           sentinel3_ip:"",
-          sentinel3_port: 0,
+          sentinel3_port: undefined,
       }
     },
 
@@ -337,21 +368,21 @@ export default {
         if (this.createData.sentinel1_ip.length != 0) {
           sentinels.push({
             ip: this.createData.sentinel1_ip,
-            port: this.createData.sentinel1_port,
+            port: Number(this.createData.sentinel1_port),
             })
         }
 
         if (this.createData.sentinel2_ip.length != 0) {
           sentinels.push({
             ip: this.createData.sentinel2_ip,
-            port: this.createData.sentinel2_port,
+            port: Number(this.createData.sentinel2_port),
             })
         }
 
         if (this.createData.sentinel3_ip.length != 0) {
           sentinels.push({
             ip: this.createData.sentinel3_ip,
-            port: this.createData.sentinel3_port,
+            port: Number(this.createData.sentinel3_port),
             })
         }
         let res = await createSentinelInfo({

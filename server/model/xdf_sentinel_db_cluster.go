@@ -2,19 +2,19 @@
 package model
 
 // 如果含有time.Time 请自行import time包
-type SentinelDBClusterInfo struct {
-      ClusterID  int `json:"cluster_id" form:"cluster_id" gorm:"column:cluster_id; primarykey;AUTO_INCREMENT;comment:"`
-      LeaderEpoch  int `json:"leader_epoch" form:"leader_epoch" gorm:"column:leader_epoch;comment:"`
-      RlpcUser  string `json:"rlpc_user" form:"rlpc_user" gorm:"column:rlpc_user;comment:;type:char(30);size:30;"`
-      RlpcPWD  string `json:"rlpc_pwd" form:"rlpc_pwd" gorm:"column:rlpc_pwd;comment:;type:char(30);size:30;"`
-      SentinelClusterID  int `json:"sentinel_cluster_id" form:"sentinel_cluster_id" gorm:"column:sentinel_cluster_id;comment:"`
-}
 
+type SentinelDBClusterInfo struct {
+	ClusterID         int    `json:"cluster_id" form:"cluster_id" gorm:"column:cluster_id; primarykey;AUTO_INCREMENT;comment:"`
+	LeaderEpoch       int    `json:"leader_epoch" form:"leader_epoch" gorm:"column:leader_epoch;comment:"`
+	RlpcUser          string `json:"rlpc_user" form:"rlpc_user" gorm:"column:rlpc_user;comment:;type:char(30);size:30;"`
+	RlpcPWD           string `json:"rlpc_pwd" form:"rlpc_pwd" gorm:"column:rlpc_pwd;comment:;type:char(30);size:30;"`
+	SentinelClusterID int    `json:"sentinel_cluster_id" form:"sentinel_cluster_id" gorm:"column:sentinel_cluster_id;comment:"`
+	Dbs               string `json:"dbs" form:"dbs" gorm:"column:dbs;type:varchar(500) size:500;comment:"`
+}
 
 func (SentinelDBClusterInfo) TableName() string {
-  return "sentinel_db_cluster_info"
+	return "sentinel_db_cluster_info"
 }
-
 
 // 如果使用工作流功能 需要打开下方注释 并到initialize的workflow中进行注册 且必须指定TableName
 // type SentinelDBClusterInfoWorkflow struct {

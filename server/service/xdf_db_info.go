@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -24,6 +25,16 @@ func CreateDataBaseInfo(DBInfo model.DataBaseInfo) (err error) {
 //@return: err error
 
 func DeleteDataBaseInfo(DBInfo model.DataBaseInfo) (err error) {
+	db := global.GVA_DB.Model(&model.SentinelDBClusterInfo{})
+	var total int64
+	db = db.Where("`cluster_id` = ?",DBInfo.ClusterID)
+	err = db.Count(&total).Error
+	if err != nil {
+		return err
+	}
+	if total != 0 {
+		return errors.New("cant delete, this db cluster is under sentinel")
+	}
 	err = global.GVA_DB.Delete(&DBInfo).Error
 	return err
 }

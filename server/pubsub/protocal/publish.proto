@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+option go_package = ".;dbms";
+
+message Topic {
+  uint32 sentinel_cluster_id = 1;
+}
+message PubsubMessage {
+  AddDBCluster add_db_cluster = 1;
+  DelDBCluster del_db_cluster = 2;
+}
+
+message AddDBCluster {
+  DBClusterConfig db_cluster_config = 1;
+}
+
+message DelDBCluster {
+  string db_cluster_name = 1;
+}
+
+message PublishRequest {
+  Topic topic = 1;
+  PubsubMessage message = 2;
+}
+message PublishResponse {
+}
+
+message GetConfigReq {
+  uint32 port = 1;
+}
+
+message Config {
+  uint64 current_epoch = 1;
+  uint64 config_epoch = 2;
+  repeated SentinelConfig sentinel_configs = 3;
+  repeated DBClusterConfig db_cluster_configs = 4;
+  uint32 sentinel_cluster_id = 5;
+}
+
+message SentinelConfig {
+  string run_id = 1;
+  string ip = 2;
+  uint64 port = 3;
+}
+
+message DBClusterConfig {
+  string name = 1;
+  string user = 2;
+  string pw = 3;
+  string rlpc_user = 4;
+  string rlpc_pw = 5;
+  uint64 leader_epoch = 6;
+  repeated DBConfig db_configs = 7;
+}
+
+enum DBType {
+  Null = 0;
+  Master = 1;
+  Slave = 2;
+  OBServer = 3;
+  OldMaster = 4;
+}
+
+message DBConfig {
+  string ip = 1;
+  uint64 port = 2;
+  DBType type = 3;
+}
+
+message GetConfigAck {
+  uint32 result = 1;
+  Config config = 2;
+}
+
+message SwitchDBClusterReq {
+  string  cluster_name = 1;
+  uint32  leader_epoch = 2;
+  repeated DBConfig dbs = 3;
+}
+
+message SwitchDBClusterAck {
+  uint32 result = 1;
+}
+
+message SyncSentinelConfigReq {
+  string run_id = 1;
+  string ip = 2;
+  uint64 port = 3;
+  uint64 current_epoch = 4;
+  uint64 config_epoch = 5;
+}
+
+message SyncSentinelConfigAck {
+  uint32 result = 1;
+}
+
+service DBMS {
+  rpc Publish (PublishRequest) returns (PublishResponse);
+  rpc Subscribe (Topic) returns (stream PubsubMessage);
+  rpc GetConfig (GetConfigReq) returns (GetConfigAck);                           //获取配置
+  rpc SwitchDBCluster(SwitchDBClusterReq) returns (SwitchDBClusterAck);          //切换集群主从
+  rpc SyncSentinelConfig(SyncSentinelConfigReq) returns (SyncSentinelConfigAck); //同步哨兵配置
+}

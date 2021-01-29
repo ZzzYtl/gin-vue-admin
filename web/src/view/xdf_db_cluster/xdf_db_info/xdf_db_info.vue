@@ -40,7 +40,9 @@
                 <el-button @click="deleteVisible = false" size="mini" type="text">取消</el-button>
                 <el-button @click="onDelete" size="mini" type="primary">确定</el-button>
               </div>
-            <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
+            <!--
+              <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
+            -->
           </el-popover>
         </el-form-item>
       </el-form>
@@ -134,26 +136,26 @@
     ></el-pagination>
 
     <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="修改">
-      <el-form :model="formData" label-position="right" label-width="80px">
-         <el-form-item label="集群名:">
+      <el-form :model="formData" :rules="formRules" label-position="right" label-width="80px">
+         <el-form-item label="集群名:" prop="tag_id">
           <el-cascader 
                 :options="tags"
                 :props="{label:'name',value:'tag_id',emitPath:false}" 
                 v-model="formData.tag_id">
-              </el-cascader>
+          </el-cascader>
       </el-form-item>
        
-         <el-form-item label="实例名:">
+         <el-form-item label="实例名:" prop="cluster_name">
             <el-input v-model="formData.cluster_name" clearable placeholder="请输入" ></el-input>
       </el-form-item>
        
-         <el-form-item label="数据库类型:">
+         <el-form-item label="数据库类型:" prop="db_type">
              <el-select v-model="formData.db_type" placeholder="请选择" clearable>
                  <el-option v-for="(item,key) in db_typeOptions" :key="key" :label="item.label" :value="item.value"></el-option>
              </el-select>
       </el-form-item>
        
-         <el-form-item label="业务线:">
+         <el-form-item label="业务线:" prop="dept_id">
           <el-cascader 
             :options="depts" 
             :props="{label:'dept_name', value: 'dept_id', emitPath:false}"
@@ -161,18 +163,19 @@
           </el-cascader>
       </el-form-item>
        
-         <el-form-item label="端口:"><el-input v-model.number="formData.port" clearable placeholder="请输入"></el-input>
+         <el-form-item label="端口:" prop="port">
+          <el-input v-model.number="formData.port" clearable placeholder="请输入"></el-input>
       </el-form-item>
        
-         <el-form-item label="数据库名:">
+         <el-form-item label="数据库名:" prop="db_name">
             <el-input v-model="formData.db_name" clearable placeholder="请输入" ></el-input>
       </el-form-item>
        
-         <el-form-item label="用户名:">
+         <el-form-item label="用户名:" prop="db_user">
             <el-input v-model="formData.db_user" clearable placeholder="请输入" ></el-input>
       </el-form-item>
        
-         <el-form-item label="密码:">
+         <el-form-item label="密码:" prop="db_pwd">
             <el-input v-model="formData.db_pwd" clearable placeholder="请输入" ></el-input>
       </el-form-item>
        
@@ -269,7 +272,34 @@ export default {
             backup_id:0,
             delay_backup_id:0,
             
-      }
+      },
+       formRules: {
+        tag_id: [
+          {required: true, message: '请选择集群', trigger: 'blur'}
+        ],
+        cluster_name: [
+          {required: true, message: '请输入实例名', trigger: 'blur'}
+        ],
+        db_type: [
+          {required: true, message: '请选择数据库类型', trigger: 'blur'}
+        ],
+        dept_id: [
+          {required: true, message: '请选择业务线', trigger: 'blur'}
+        ],
+        port: [
+          {required: true, message: '请输入端口', trigger: 'blur'}
+        ],
+        db_name: [
+          {required: true, message: '请输入数据库名', trigger: 'blur'}
+        ],
+        db_user: [
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        db_pwd: [
+          {required: true, message: '请输入密码', trigger: 'blur'}
+        ]
+
+      },
     };
   },
   filters: {

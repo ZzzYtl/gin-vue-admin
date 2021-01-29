@@ -22,7 +22,9 @@
                 <el-button @click="deleteVisible = false" size="mini" type="text">取消</el-button>
                 <el-button @click="onDelete" size="mini" type="primary">确定</el-button>
               </div>
-            <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
+            <!-- 
+              <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
+            -->
           </el-popover>
         </el-form-item>
       </el-form>
@@ -36,8 +38,28 @@
       style="width: 100%"
       tooltip-effect="dark"
     >
-    <el-table-column type="selection" width="55"></el-table-column>
-    
+    <el-table-column type="expand">
+      <template slot-scope="scope">
+        <el-form label-position="left" inline class="demo-table-expand">
+          <el-row v-for="(domain,idx) in toJson(scope.row.dbs)" :key="idx">
+          <el-col :span="6" :offset="2">
+            <el-form-item label="ip:">
+              {{domain.ip}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="角色:">
+              {{filterDict(domain.role_id,"db_role")}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        </el-form>
+      </template>
+    </el-table-column>
+
+    <!--
+      <el-table-column type="selection" width="55"></el-table-column>
+    -->
     <el-table-column label="数据库" prop="cluster_id" width="120">
       <template slot-scope="scope">
         <div> 
@@ -59,10 +81,12 @@
         </div>
       </template>
     </el-table-column> 
-    
+
       <el-table-column label="按钮组">
         <template slot-scope="scope">
-          <el-button class="table-button" @click="updateSentinelDBClusterInfo(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
+          <!--
+            <el-button class="table-button" @click="updateSentinelDBClusterInfo(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
+          -->
           <el-popover placement="top" width="160" v-model="scope.row.visible">
             <p>确定要删除吗？</p>
             <div style="text-align: right; margin: 0">
@@ -161,7 +185,8 @@ export default {
       sentinelClusters: SentinelClusters,
       dbs: DBs,
       deleteVisible: false,
-      multipleSelection: [],formData: {
+      multipleSelection: [],
+      formData: {
             cluster_id:0,
             leader_epoch:0,
             rlpc_user:"",
@@ -197,6 +222,11 @@ export default {
     }
   },
   methods: {
+      toJson:function(str){
+        var _str =JSON.parse(str);
+        return _str;
+      },
+
       //条件搜索前端看此方法
       onSubmit() {
         this.page = 1
@@ -306,7 +336,7 @@ export default {
     }
 
     await this.getTableData();
-  
+    await this.getDict("db_role");
 }
 };
 </script>

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"gin-vue-admin/global"
     "gin-vue-admin/model"
     "gin-vue-admin/model/request"
@@ -42,7 +43,8 @@ func DeleteDataBaseInfo(c *gin.Context) {
 	_ = c.ShouldBindJSON(&DBInfo)
 	if err := service.DeleteDataBaseInfo(DBInfo); err != nil {
         global.GVA_LOG.Error("删除失败!", zap.Any("err", err))
-		response.FailWithMessage("删除失败", c)
+        errMsg := fmt.Sprintf("删除失败 %v", err)
+		response.FailWithMessage(errMsg, c)
 	} else {
 		response.OkWithMessage("删除成功", c)
 	}

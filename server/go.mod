@@ -9,6 +9,7 @@ require (
 	github.com/casbin/casbin/v2 v2.11.0
 	github.com/casbin/gorm-adapter/v3 v3.0.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/docker/docker v20.10.2+incompatible
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
@@ -19,7 +20,7 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/golang/protobuf v1.4.2
 	github.com/gookit/color v1.3.1
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jordan-wright/email v0.0.0-20200824153738-3f5bafa1cd84
@@ -50,7 +51,8 @@ require (
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/sys v0.0.0-20200610111108-226ff32320da // indirect
 	golang.org/x/tools v0.0.0-20200324003944-a576cf524670 // indirect
-	google.golang.org/protobuf v1.24.0 // indirect
+	google.golang.org/grpc v1.27.0
+	google.golang.org/protobuf v1.24.0
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	gorm.io/driver/mysql v0.3.0

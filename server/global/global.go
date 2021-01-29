@@ -1,6 +1,7 @@
 package global
 
 import (
+	"gin-vue-admin/pubsub/pub"
 	"go.uber.org/zap"
 
 	"gin-vue-admin/config"
@@ -16,4 +17,5 @@ var (
 	GVA_VP     *viper.Viper
 	//GVA_LOG    *oplogging.Logger
 	GVA_LOG    *zap.Logger
+	GVA_PUBER  *pub.Puber
 )

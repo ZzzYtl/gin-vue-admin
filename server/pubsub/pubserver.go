@@ -2,31 +2,30 @@ package pubsub
 
 import (
 	"context"
-	"gin-vue-admin/global"
 	publish "gin-vue-admin/pubsub/protocal"
 	"github.com/docker/docker/pkg/pubsub"
+	"gin-vue-admin/pubsub/dbms"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"log"
 	"net"
 	"time"
 )
 
 type Server struct {
+	sentinel.RpcServer
 	Pub *pubsub.Publisher
 }
 
 func (s *Server) Publish(c context.Context, pub *publish.PublishRequest) (*publish.PublishResponse, error) {
 	s.Pub.Publish(pub)
-	return &publish.PublishResponse{MessageId: 1}, nil
+	return &publish.PublishResponse{}, nil
 }
 
-func (s *Server) Subscribe(req *publish.Topic, stream publish.Publisher_SubscribeServer) error {
+func (s *Server) Subscribe(req *publish.Topic, stream publish.DBMS_SubscribeServer) error {
 	ch := s.Pub.SubscribeTopic(func(v interface{}) bool {
-		if req.GetName() == "" {
-			return true
-		}
 		if it, ok := v.(*publish.PublishRequest); ok {
-			if it.Topic.GetName() == req.GetName() {
+			if it.Topic.GetSentinelClusterId() == req.GetSentinelClusterId() {
 				return true
 			}
 		}
@@ -34,7 +33,7 @@ func (s *Server) Subscribe(req *publish.Topic, stream publish.Publisher_Subscrib
 	})
 	for v := range ch {
 		if pub, ok := v.(*publish.PublishRequest); ok {
-			if err := stream.Send(pub.GetMessages()); err != nil {
+			if err := stream.Send(pub.GetMessage()); err != nil {
 				return err
 			}
 		}
@@ -47,14 +46,14 @@ func RunPublishServer()  {
 }
 
 func RunPubslishServerInternal()  {
-	global.GVA_LOG.Info("启动订阅服务...")
+	log.Println("启动订阅服务...")
 	lis, err := net.Listen("tcp", ":10086")
 	if err != nil {
-		global.GVA_LOG.Fatal("订阅服务模块监听失败!", zap.Any("err", err))
+		log.Fatal("订阅服务模块监听失败!", zap.Any("err", err))
 	}
 	s := grpc.NewServer()
-	publish.RegisterPublisherServer(s, &Server{Pub: pubsub.NewPublisher(100*time.Millisecond, 10)})
+	publish.RegisterDBMSServer(s, &Server{Pub: pubsub.NewPublisher(100*time.Millisecond, 10)})
 	if err := s.Serve(lis); err != nil {
-		global.GVA_LOG.Fatal("订阅服务模块启动失败!", zap.Any("err", err))
+		log.Fatal("订阅服务模块启动失败!", zap.Any("err", err))
 	}
 }

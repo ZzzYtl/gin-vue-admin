@@ -4,6 +4,8 @@ import (
 	"gin-vue-admin/core"
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize"
+	"gin-vue-admin/pubsub"
+	"gin-vue-admin/pubsub/pub"
 )
 
 // @title Swagger Example API
@@ -21,6 +23,7 @@ func main() {
 	// 程序结束前关闭数据库链接
 	db, _ := global.GVA_DB.DB()
 	defer db.Close()
-
+	pubsub.RunPublishServer()            // step a
+	global.GVA_PUBER = pub.CreatePuber() // step b
 	core.RunWindowsServer()
 }

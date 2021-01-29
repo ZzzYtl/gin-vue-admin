@@ -24,7 +24,22 @@ func CreateSentinelInfo(sentinelinfo model.SentinelInfo) (err error) {
 //@return: err error
 
 func DeleteSentinelInfo(sentinelinfo model.SentinelInfo) (err error) {
+	findErr := global.GVA_DB.Where("sentinel_id = ?", sentinelinfo.SentinelID).
+		First(&sentinelinfo).Error
 	err = global.GVA_DB.Delete(&sentinelinfo).Error
+	if err == nil {
+		if findErr == nil {
+			db := global.GVA_DB.Model(&model.SentinelInfo{})
+			var total int64
+			db = db.Where("`sentinel_cluster_id` = ?",sentinelinfo.SentinelClusterID)
+			countErr := db.Count(&total).Error
+			if countErr == nil {
+				if total == 0 {
+					global.GVA_DB.Delete(&model.SentinelClusterInfo{SentinelClusterID: sentinelinfo.SentinelClusterID})
+				}
+			}
+		}
+	}
 	return err
 }
 
