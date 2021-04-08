@@ -44,7 +44,9 @@
       </template>
     </el-table-column> 
     
-      <el-table-column label="操作">
+    <el-table-column label="域" prop="domain" width="320"></el-table-column>
+
+    <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button class="table-button" @click="updateBackUpDB(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
           <el-popover placement="top" width="160" v-model="scope.row.visible">
@@ -70,21 +72,26 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="弹窗操作">
-      <el-form :model="formData"  :rules="formRules" label-position="right" label-width="120px">
-         <el-form-item label="IP:" prop="IP">
+    <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="新增备库">
+      <el-form ref="apiForm" :model="formData"  :rules="formRules" label-position="right" label-width="120px">
+      
+      <el-form-item label="IP:" prop="IP">
             <el-input v-model="formData.IP" clearable placeholder="请输入" ></el-input>
       </el-form-item>
+
+      <el-form-item label="domain:" prop="domain">
+            <el-input v-model="formData.domain" clearable placeholder="请输入" ></el-input>
+      </el-form-item>
        
-         <el-form-item label="备库/延时备库:" prop="type">
-            <el-select v-model.trim="formData.type">
-                <el-option
-                  v-for="item in backupDBTypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+      <el-form-item label="备库/延时备库:" prop="type">
+        <el-select v-model.trim="formData.type">
+            <el-option
+              v-for="item in backupDBTypes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
       </el-form-item>
        </el-form>
       <div class="dialog-footer" slot="footer">
@@ -118,7 +125,9 @@ export default {
       deleteVisible: false,
       multipleSelection: [],formData: {
             backup_id:0,
-            IP:"",           
+            IP:"",
+            domain:"",
+            type : 1,           
       },
       formRules: {
         IP: [
@@ -126,6 +135,9 @@ export default {
         ],
         type: [
           {required: true, message: '请选择备库类型', trigger: 'blur'}
+        ],
+        domain: [
+          {required: true, message: '请输入域名', trigger: 'blur'}
         ]
       },
       backupDBTypes: [
@@ -206,7 +218,8 @@ export default {
       this.formData = {
           backup_id:0,
           IP:"",
-          type:0,
+          domain:"",
+          type:1,
           
       };
     },

@@ -12,7 +12,7 @@ type DataBaseInfo struct {
       DBName  string `json:"db_name" form:"db_name" gorm:"column:db_name;comment:;type:char(30);size:30;"`
       DBUser  string `json:"db_user" form:"db_user" gorm:"column:db_user;comment:;type:char(30);size:30;"`
       DBPWD  string `json:"db_pwd" form:"db_pwd" gorm:"column:db_pwd;comment:;type:char(30);size:30;"`
-      ZKName  string `json:"zk_name" form:"zk_name" gorm:"column:zk_name;comment:;type:char(30);size:30;"`
+      ZKName  string `json:"zk_name" form:"zk_name" gorm:"column:zk_name;comment:;type:char(200);size:200;"`
       BackUpID  int `json:"backup_id" form:"backup_id" gorm:"column:backup_id;comment:;type:smallint;size:3;"`
       DelayBackUp  int `json:"delay_backup_id" form:"delay_backup_id" gorm:"column:delay_backup_id;comment:;type:smallint;size:3;"`
 }

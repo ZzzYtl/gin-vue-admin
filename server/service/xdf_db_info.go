@@ -28,6 +28,7 @@ func DeleteDataBaseInfo(DBInfo model.DataBaseInfo) (err error) {
 	db := global.GVA_DB.Model(&model.SentinelDBClusterInfo{})
 	var total int64
 	db = db.Where("`cluster_id` = ?",DBInfo.ClusterID)
+	global.GVA_DB.First(&DBInfo)
 	err = db.Count(&total).Error
 	if err != nil {
 		return err
@@ -36,6 +37,13 @@ func DeleteDataBaseInfo(DBInfo model.DataBaseInfo) (err error) {
 		return errors.New("cant delete, this db cluster is under sentinel")
 	}
 	err = global.GVA_DB.Delete(&DBInfo).Error
+
+	db = global.GVA_DB.Model(&model.DataBaseInfo{})
+	db = db.Where("`cluster_name` = ?", DBInfo.ClusterName)
+	err = db.Count(&total).Error
+	if err == nil && total == 0 {
+		db = global.GVA_DB.Where("`name` = ?", DBInfo.ClusterName).Delete(model.LogicCluster{})
+	}
 	return err
 }
 

@@ -6,6 +6,7 @@ type BackUpDB struct {
       BackUpID  int `json:"backup_id" form:"backup_id" gorm:"primarykey;AUTO_INCREMENT;column:backup_id;comment:;type:int;"`
       IP  string `json:"IP" form:"IP" gorm:"column:ip;not null;comment:ip;type:char(15);size:15;"`
       Type  int `json:"type" form:"type" gorm:"column:type;comment:类型;type:smallint;size:3;"`
+      Domain string `json:"domain" form:"domain" gorm:"column:domain;not null;comment:domain;type:char(128);size:128;"`
 }
 
 

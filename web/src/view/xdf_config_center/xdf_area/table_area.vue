@@ -67,7 +67,7 @@
     ></el-pagination>
 
     <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="新增机房">
-      <el-form :model="formData" :rules="formRules" label-position="right" label-width="80px">
+      <el-form ref="apiForm" :model="formData" :rules="formRules" label-position="right" label-width="80px">
          <el-form-item label="机房名称:" prop="name" label-width="100px">
             <el-input v-model.trim="formData.name" clearable placeholder="请输入"></el-input>
       </el-form-item>

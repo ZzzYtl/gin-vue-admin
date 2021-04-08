@@ -59,4 +59,7 @@ require (
 	gorm.io/gorm v1.20.9
 )
 
-replace github.com/casbin/gorm-adapter/v3 => github.com/casbin/gorm-adapter/v3 v3.0.2
+replace (
+	github.com/casbin/gorm-adapter/v3 => github.com/casbin/gorm-adapter/v3 v3.0.2
+	github.com/go-sql-driver/mysql => github.com/go-sql-driver/mysql v1.4.1
+)

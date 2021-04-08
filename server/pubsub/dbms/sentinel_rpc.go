@@ -75,19 +75,31 @@ func (s *RpcServer) GetConfig(c context.Context, req *publish.GetConfigReq) (*pu
 			RlpcPw:      v.RlpcPWD,
 			LeaderEpoch: uint64(v.LeaderEpoch),
 		}
-		dbClusterInfo := model.DataBaseInfo{}
-		err = global.GVA_DB.Where("cluster_id = ?", v.ClusterID).First(&dbClusterInfo).Error
+
+		lc := &model.LogicCluster{
+			LogicClusterID: v.LogicClusterID,
+		}
+		err = global.GVA_DB.Find(lc).Error
 		if err != nil {
 			return &publish.GetConfigAck{
 				Result: 1,
 				Config: nil,
 			}, nil
 		}
-		dbClusterCfg.Name = dbClusterInfo.DBName
+
+		dbClusterInfo := model.DataBaseInfo{}
+		err = global.GVA_DB.Where("tag_id = ? and cluster_name = ?", v.ClusterID, lc.Name).First(&dbClusterInfo).Error
+		if err != nil {
+			return &publish.GetConfigAck{
+				Result: 1,
+				Config: nil,
+			}, nil
+		}
+		dbClusterCfg.Name = v.GetDBClusterName()
 		dbClusterCfg.User = dbClusterInfo.DBUser
 		dbClusterCfg.Pw = dbClusterInfo.DBPWD
 
-		var dbs []model.Node
+		var dbs []publish.DBConfig
 		if json.Unmarshal([]byte(v.Dbs), &dbs) != nil {
 			return &publish.GetConfigAck{
 				Result: 1,
@@ -96,9 +108,9 @@ func (s *RpcServer) GetConfig(c context.Context, req *publish.GetConfigReq) (*pu
 		}
 		for _, v := range dbs {
 			dbClusterCfg.DbConfigs = append(dbClusterCfg.DbConfigs, &publish.DBConfig{
-				Ip:   v.IP,
+				Ip:   v.Ip,
 				Port: uint64(dbClusterInfo.Port),
-				Type: publish.DBType(v.RoleID),
+				Type: v.Type,
 			})
 		}
 		dbClusterCfgs = append(dbClusterCfgs, &dbClusterCfg)
@@ -115,16 +127,9 @@ func (s *RpcServer) GetConfig(c context.Context, req *publish.GetConfigReq) (*pu
 func (s *RpcServer) SwitchDBCluster(c context.Context,
 		req *publish.SwitchDBClusterReq) (*publish.SwitchDBClusterAck, error) {
 	clusterName := req.GetClusterName()
-	db := model.DataBaseInfo{}
-	err := global.GVA_DB.Where("db_name = ?", clusterName).First(&db).Error
-	if err != nil {
-		return &publish.SwitchDBClusterAck{
-			Result: 1,
-		}, err
-	}
 
 	sentinelCluster := model.SentinelDBClusterInfo{}
-	err = global.GVA_DB.Where("cluster_id = ?", db.ClusterID).First(&sentinelCluster).Error
+	err := global.GVA_DB.Where("id = ?", clusterName).First(&sentinelCluster).Error
 	if err != nil {
 		return &publish.SwitchDBClusterAck{
 			Result: 1,
@@ -132,7 +137,14 @@ func (s *RpcServer) SwitchDBCluster(c context.Context,
 	}
 
 	if len(req.Dbs) != 0 {
-		data, err := json.Marshal(req.Dbs)
+		var dbs []publish.DBConfig
+		for _, v := range req.Dbs {
+			dbs = append(dbs, publish.DBConfig{
+				Ip:   v.Ip,
+				Type: v.Type,
+			})
+		}
+		data, err := json.Marshal(dbs)
 		if err != nil {
 			return &publish.SwitchDBClusterAck{
 				Result: 1,

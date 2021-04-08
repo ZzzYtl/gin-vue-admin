@@ -20,7 +20,7 @@ func RunWindowsServer() {
 	initialize.InitWkMode()
 	Router := initialize.Routers()
 	Router.Static("/form-generator", "./resource/page")
-
+	Router.Static("/dbms", "./resource/dist")
 	address := fmt.Sprintf(":%d", global.GVA_CONFIG.System.Addr)
 	s := initServer(address, Router)
 	// 保证文本顺序输出

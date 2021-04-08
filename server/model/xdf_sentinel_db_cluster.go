@@ -1,15 +1,23 @@
 // 自动生成模板SentinelDBClusterInfo
 package model
 
+import "strconv"
+
 // 如果含有time.Time 请自行import time包
 
 type SentinelDBClusterInfo struct {
-	ClusterID         int    `json:"cluster_id" form:"cluster_id" gorm:"column:cluster_id; primarykey;AUTO_INCREMENT;comment:"`
+	ID				  int    `json:"id" form:"id" gorm:"column:id; primarykey;AUTO_INCREMENT;comment:"`
+	ClusterID         int    `json:"cluster_id" form:"cluster_id" gorm:"column:cluster_id;comment:"`
+	LogicClusterID    int    `json:"logic_cluster_id" form:"logic_cluster_id" gorm:"column:logic_cluster_id;comment:"`
 	LeaderEpoch       int    `json:"leader_epoch" form:"leader_epoch" gorm:"column:leader_epoch;comment:"`
 	RlpcUser          string `json:"rlpc_user" form:"rlpc_user" gorm:"column:rlpc_user;comment:;type:char(30);size:30;"`
 	RlpcPWD           string `json:"rlpc_pwd" form:"rlpc_pwd" gorm:"column:rlpc_pwd;comment:;type:char(30);size:30;"`
 	SentinelClusterID int    `json:"sentinel_cluster_id" form:"sentinel_cluster_id" gorm:"column:sentinel_cluster_id;comment:"`
-	Dbs               string `json:"dbs" form:"dbs" gorm:"column:dbs;type:varchar(500) size:500;comment:"`
+	Dbs               string `json:"dbs" form:"dbs" gorm:"column:dbs;type:varchar(1024) size:1024;comment:"`
+}
+
+func (info *SentinelDBClusterInfo)GetDBClusterName() string {
+	return strconv.Itoa(info.ID)
 }
 
 func (SentinelDBClusterInfo) TableName() string {

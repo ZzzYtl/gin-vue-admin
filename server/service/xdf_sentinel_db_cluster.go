@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -15,17 +16,57 @@ import (
 //@return: err error
 
 func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) (err error) {
+	var total int64
+	err = global.GVA_DB.Model(SentinelDBCluster).Where("cluster_id = ? and logic_cluster_id = ?", SentinelDBCluster.ClusterID, SentinelDBCluster.LogicClusterID).Count(&total).Error
+	if err != nil {
+		return err
+	}
+	if total != 0 {
+		return errors.New("this dbcluster is already exist")
+	}
+
+
+	logicCluster := model.LogicCluster{
+		LogicClusterID: SentinelDBCluster.LogicClusterID,
+	}
+	err = global.GVA_DB.First(&logicCluster).Error
+	if err != nil {
+		return err
+	}
 	dbClusterInfo := model.DataBaseInfo{}
-	err = global.GVA_DB.Where("cluster_id = ?", SentinelDBCluster.ClusterID).First(&dbClusterInfo).Error
+	err = global.GVA_DB.Where("tag_id = ? and cluster_name = ?", SentinelDBCluster.ClusterID, logicCluster.Name).First(&dbClusterInfo).Error
 	if err != nil {
 		return err
 	}
 
-	var dbs []model.Node
-	err = global.GVA_DB.Where("tag_id = ?", dbClusterInfo.TagID).Find(&dbs).Error
+	var dbs []publish.DBConfig
+	var nodes []model.Node
+	err = global.GVA_DB.Where("tag_id = ?",  SentinelDBCluster.ClusterID).Find(&nodes).Error
 	if err != nil {
 		return err
 	}
+	for _, v := range nodes {
+		dbs = append(dbs, publish.DBConfig{
+			Ip:   v.IP,
+			Type: publish.DBType(v.RoleID),
+		})
+	}
+
+	backUp :=  model.BackUpDB{
+		BackUpID: dbClusterInfo.BackUpID,
+	}
+	err = global.GVA_DB.Where("backup_id = ?", dbClusterInfo.BackUpID).Find(&backUp).Error
+	if err != nil {
+		return err
+	}
+
+	if len(backUp.IP) > 0 {
+		dbs = append(dbs, publish.DBConfig{
+			Ip:   backUp.IP,
+			Type: publish.DBType_OBServer,
+		})
+	}
+
 	data, err := json.Marshal(dbs)
 	if err != nil {
 		return err
@@ -35,7 +76,7 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 	if err == nil {
 		msg := &publish.AddDBCluster{
 			DbClusterConfig: &publish.DBClusterConfig{
-				Name:        dbClusterInfo.DBName,
+				Name:        SentinelDBCluster.GetDBClusterName(),
 				User:        dbClusterInfo.DBUser,
 				Pw:          dbClusterInfo.DBPWD,
 				RlpcUser:    SentinelDBCluster.RlpcUser,
@@ -46,9 +87,9 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 		}
 		for _, db := range dbs {
 			msg.DbClusterConfig.DbConfigs = append(msg.DbClusterConfig.DbConfigs, &publish.DBConfig{
-				Ip:   db.IP,
+				Ip:   db.Ip,
 				Port: uint64(dbClusterInfo.Port),
-				Type: publish.DBType(db.RoleID),
+				Type: db.Type,
 			})
 		}
 		global.GVA_PUBER.Pub(uint32(SentinelDBCluster.SentinelClusterID),
@@ -64,15 +105,13 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 //@return: err error
 
 func DeleteSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) (err error) {
-	cluster := &model.DataBaseInfo{}
-	global.GVA_DB.Where("cluster_id = ?", SentinelDBCluster.ClusterID).First(cluster)
 	global.GVA_DB.First(&SentinelDBCluster)
 	err = global.GVA_DB.Delete(&SentinelDBCluster).Error
-	if err == nil && len(cluster.DBName) != 0 {
+	if err == nil && len(SentinelDBCluster.GetDBClusterName()) != 0 {
 		global.GVA_PUBER.Pub(uint32(SentinelDBCluster.SentinelClusterID),
 			&publish.PubsubMessage{
 				DelDbCluster: &publish.DelDBCluster{
-					DbClusterName: cluster.DBName,
+					DbClusterName: SentinelDBCluster.GetDBClusterName(),
 				},
 			})
 	}

@@ -53,6 +53,7 @@ func Routers() *gin.Engine {
 		router.InitDeptInfoRouter(PrivateGroup)			     // 业务线相关接口
 		router.InitNodeRouter(PrivateGroup)					 // 集群相关接口
 		router.InitTagRouter(PrivateGroup)
+		router.InitLogicClusterRouter(PrivateGroup)
 		router.InitDataBaseInfoRouter(PrivateGroup)
 		router.InitSentinelInfoRouter(PrivateGroup)
 		router.InitSentinelDBClusterInfoRouter(PrivateGroup)

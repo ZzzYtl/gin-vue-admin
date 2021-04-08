@@ -117,7 +117,7 @@
       <el-row>
           <el-col :span="12">
               <el-form-item label="sentinel_ip:" prop="sentinel2_ip">
-                <el-input v-model="createData.sentinel2_ip" onkeyup="value=value.replace(/[^\d]/g,'')" clearable placeholder="请输入" ></el-input>
+                <el-input v-model="createData.sentinel2_ip" clearable placeholder="请输入" ></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -135,7 +135,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="sentinel_port:" prop="sentinel3_port">
-                <el-input v-model="createData.sentinel3_port" clearable placeholder="请输入" ></el-input>
+                <el-input v-model="createData.sentinel3_port"  onkeyup="value=value.replace(/[^\d]/g,'')" clearable placeholder="请输入" ></el-input>
             </el-form-item>
           </el-col>
       </el-row>

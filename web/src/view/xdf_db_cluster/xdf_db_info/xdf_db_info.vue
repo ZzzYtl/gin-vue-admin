@@ -382,7 +382,7 @@ export default {
           cluster_id:0,
           tag_id:0,
           cluster_name:"",
-          db_type:0,
+          db_type:3,
           dept_id:0,
           port:0,
           db_name:"",

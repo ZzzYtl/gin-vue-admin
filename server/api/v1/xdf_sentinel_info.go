@@ -68,10 +68,22 @@ func CreateSentinelInfo(c *gin.Context) {
 func DeleteSentinelInfo(c *gin.Context) {
 	var sentinelinfo model.SentinelInfo
 	_ = c.ShouldBindJSON(&sentinelinfo)
+	findErr := global.GVA_DB.Where("sentinel_id = ?", sentinelinfo.SentinelID).First(&sentinelinfo).Error
 	if err := service.DeleteSentinelInfo(sentinelinfo); err != nil {
         global.GVA_LOG.Error("删除失败!", zap.Any("err", err))
 		response.FailWithMessage("删除失败", c)
 	} else {
+		if findErr == nil {
+			db := global.GVA_DB.Model(&model.SentinelDBClusterInfo{})
+			var total int64
+			db = db.Where("`sentinel_cluster_id` = ?", sentinelinfo.SentinelClusterID)
+			countErr := db.Count(&total).Error
+			if countErr == nil {
+				if total == 0 {
+					global.GVA_DB.Delete(&model.SentinelClusterInfo{SentinelClusterID: sentinelinfo.SentinelClusterID})
+				}
+			}
+		}
 		response.OkWithMessage("删除成功", c)
 	}
 }

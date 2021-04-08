@@ -56,7 +56,7 @@ captcha:
 mysql:
   path: '127.0.0.1:3306'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
-  db-name: 'qmPlus'
+  db-name: 'qmplus'
   username: 'root'
   password: '123456'
   max-idle-conns: 10
@@ -77,3 +77,4 @@ qiniu:
   access-key: '25j8dYBZ2wuiy0yhwShytjZDTX662b8xiFguwxzZ'
   secret-key: 'pgdbqEsf7ooZh7W3xokP833h3dZ_VecFXPDeG5JY'
   use-cdn-domains: false
+

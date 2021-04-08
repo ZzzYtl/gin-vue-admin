@@ -23,7 +23,7 @@
             :props="{label:'name',value:'area_id',emitPath:false}" 
             v-model="searchInfo.area_id">
           </el-cascader>
-        </el-form-item>    
+        </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary">查询</el-button>
         </el-form-item>
@@ -61,7 +61,6 @@
     <el-table-column label="集群名称" prop="tag_id" width="120">
           <template slot-scope="scope">
           <div>
-            
             {{scope.row.tag_id|clusterFilter}}
           </div>
         </template>
@@ -383,10 +382,9 @@ closeCreateDialog() {
         this.getTableData();
       }
     },
+
     getTagByID(tag_id) {
        var index = this.tags.findNode( o => o.tag_id === tag_id)
-       
-       console.log(index)
     },
 
     async enterCreateDialog() {
@@ -432,7 +430,7 @@ closeCreateDialog() {
             type:"success",
             message:"创建成功"
           })
-          this.closeDialog();
+          this.closeCreateDialog();
           this.getTableData();
         }
     },
@@ -484,7 +482,6 @@ closeCreateDialog() {
     }
   },
   async created() {
-    
     var rst = await getAllTags();
     if (rst.code == 0) {
       this.tags = rst.data.list
@@ -497,7 +494,7 @@ closeCreateDialog() {
     }
     await this.getDict("db_role");
     await this.getTableData();
-}
+  }
 };
 </script>
 

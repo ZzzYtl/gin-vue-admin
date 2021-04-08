@@ -26,6 +26,14 @@ func CreateDataBaseInfo(c *gin.Context) {
         global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
 		response.FailWithMessage("创建失败", c)
 	} else {
+		lc := model.LogicCluster{
+			Name:           DBInfo.ClusterName,
+		}
+		_, err = service.CreateLogicCluster(lc);
+		if err != nil {
+			global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
+			//response.FailWithMessage("创建失败", c)
+		}
 		response.OkWithMessage("创建成功", c)
 	}
 }

@@ -58,7 +58,7 @@
     ></el-pagination>
 
     <el-dialog :before-close="closeDialog" :visible.sync="dialogFormVisible" title="新增业务线">
-      <el-form :model="formData" :rules="formRules" label-position="right" label-width="120px">      
+      <el-form ref=apiForm :model="formData" :rules="formRules" label-position="right" label-width="120px">      
          <el-form-item label="业务线名称:" prop="dept_name">
             <el-input v-model="formData.dept_name" clearable placeholder="请输入" ></el-input>
       </el-form-item>
