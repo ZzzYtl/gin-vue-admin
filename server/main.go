@@ -15,6 +15,7 @@ import (
 // @in header
 // @name x-token
 // @BasePath /
+
 func main() {
 	global.GVA_VP = core.Viper()          // 初始化Viper
 	global.GVA_LOG = core.Zap()           // 初始化zap日志库
@@ -23,7 +24,7 @@ func main() {
 	// 程序结束前关闭数据库链接
 	db, _ := global.GVA_DB.DB()
 	defer db.Close()
-	pubsub.RunPublishServer()            // step a
+	pubsub.GVA_MGR = pubsub.RunPublishServer()            // step a
 	global.GVA_PUBER = pub.CreatePuber() // step b
 	core.RunWindowsServer()
 }

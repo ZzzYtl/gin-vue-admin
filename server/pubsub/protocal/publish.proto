@@ -94,10 +94,19 @@ message SyncSentinelConfigAck {
   uint32 result = 1;
 }
 
+message HeartBeatReq{
+  string ip = 1;
+  uint32 port = 2;
+}
+
+message HeartBeatAck{
+}
+
 service DBMS {
   rpc Publish (PublishRequest) returns (PublishResponse);
   rpc Subscribe (Topic) returns (stream PubsubMessage);
   rpc GetConfig (GetConfigReq) returns (GetConfigAck);                           //获取配置
   rpc SwitchDBCluster(SwitchDBClusterReq) returns (SwitchDBClusterAck);          //切换集群主从
   rpc SyncSentinelConfig(SyncSentinelConfigReq) returns (SyncSentinelConfigAck); //同步哨兵配置
+  rpc HeartBeat(HeartBeatReq) returns (HeartBeatAck);                            //心跳
 }

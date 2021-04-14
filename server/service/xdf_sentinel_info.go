@@ -4,6 +4,7 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+	"gin-vue-admin/pubsub"
 )
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -73,6 +74,9 @@ func UpdateSentinelInfo(sentinelinfo model.SentinelInfo) (err error) {
 
 func GetSentinelInfo(id int) (err error, sentinelinfo model.SentinelInfo) {
 	err = global.GVA_DB.Where("sentinel_id = ?", id).First(&sentinelinfo).Error
+	if err == nil {
+		sentinelinfo.OnLine = pubsub.GVA_MGR.IsSentinelOnLine(sentinelinfo.IP, uint32(sentinelinfo.Port))
+	}
 	return
 }
 
@@ -100,5 +104,8 @@ func GetSentinelInfoInfoList(info request.SentinelInfoSearch) (err error, list i
     }
 	err = db.Count(&total).Error
 	err = db.Limit(limit).Offset(offset).Find(&sentinelinfos).Error
+	for i, v := range sentinelinfos {
+		sentinelinfos[i].OnLine = pubsub.GVA_MGR.IsSentinelOnLine(v.IP, uint32(v.Port))
+	}
 	return err, sentinelinfos, total
 }

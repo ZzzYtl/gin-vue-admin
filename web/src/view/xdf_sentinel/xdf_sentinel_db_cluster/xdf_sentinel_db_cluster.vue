@@ -49,7 +49,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="角色:"> 
-                {{filterDict(domain.role_id,"db_role")}}
+                {{filterDict(domain.role_id,"type")}}
             </el-form-item>
           </el-col>
         </el-row>

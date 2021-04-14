@@ -8,9 +8,39 @@ import (
 	publish "gin-vue-admin/pubsub/protocal"
 	"google.golang.org/grpc/peer"
 	"net"
+	"sync"
+	"time"
 )
 
+type SentinelKey struct {
+	ip string
+	port uint32
+}
+
+type Sentinel struct {
+	beat *time.Timer
+	online bool
+}
+
 type RpcServer struct {
+	sentinels map[SentinelKey]*Sentinel
+	mutex sync.RWMutex
+}
+
+func (s *RpcServer) Init() {
+	s.sentinels = make(map[SentinelKey]*Sentinel)
+}
+
+func (s *RpcServer) IsSentinelOnLine(ip string, port uint32) bool {
+	s.mutex.RLock()
+	defer  s.mutex.RUnlock()
+	if v, ok := s.sentinels[SentinelKey{
+		ip:   ip,
+		port: port,
+	}]; ok {
+		return v.online
+	}
+	return false
 }
 
 func (s *RpcServer) GetConfig(c context.Context, req *publish.GetConfigReq) (*publish.GetConfigAck, error) {
@@ -190,4 +220,30 @@ func (s *RpcServer) SyncSentinelConfig(c context.Context,
 	return &publish.SyncSentinelConfigAck{
 		Result: 0,
 	}, err
+}
+
+func (s *RpcServer)HeartBeat(c context.Context, req *publish.HeartBeatReq) (*publish.HeartBeatAck, error) {
+	ip := req.Ip
+	port := req.Port
+
+	s.mutex.Lock()
+	defer  s.mutex.Unlock()
+	skey := SentinelKey{
+		ip:   ip,
+		port: port,
+	}
+	if v, ok := s.sentinels[skey]; ok {
+		v.beat.Reset(time.Second * 3)
+		v.online = true
+	} else {
+		f := func() {
+			s.sentinels[skey].online = false
+		}
+		s.sentinels[skey] = &Sentinel{
+			beat:   time.AfterFunc(time.Second * 3, f),
+			online: false,
+		}
+	}
+	return &publish.HeartBeatAck{
+	}, nil
 }

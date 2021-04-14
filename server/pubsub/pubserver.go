@@ -2,9 +2,9 @@ package pubsub
 
 import (
 	"context"
+	sentinel "gin-vue-admin/pubsub/dbms"
 	publish "gin-vue-admin/pubsub/protocal"
 	"github.com/docker/docker/pkg/pubsub"
-	"gin-vue-admin/pubsub/dbms"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"log"
@@ -12,9 +12,20 @@ import (
 	"time"
 )
 
+var GVA_MGR	   *Server
+
 type Server struct {
-	sentinel.RpcServer
+	*sentinel.RpcServer
 	Pub *pubsub.Publisher
+}
+
+func NewServer(pub *pubsub.Publisher) *Server {
+	server :=  &Server{
+		Pub:       pub,
+	}
+	server.RpcServer = &sentinel.RpcServer{}
+	server.RpcServer.Init()
+	return server
 }
 
 func (s *Server) Publish(c context.Context, pub *publish.PublishRequest) (*publish.PublishResponse, error) {
@@ -41,18 +52,21 @@ func (s *Server) Subscribe(req *publish.Topic, stream publish.DBMS_SubscribeServ
 	return nil
 }
 
-func RunPublishServer()  {
-	go RunPubslishServerInternal()
-}
-
-func RunPubslishServerInternal()  {
+func RunPublishServer() *Server {
 	log.Println("启动订阅服务...")
 	lis, err := net.Listen("tcp", ":10086")
 	if err != nil {
 		log.Fatal("订阅服务模块监听失败!", zap.Any("err", err))
 	}
 	s := grpc.NewServer()
-	publish.RegisterDBMSServer(s, &Server{Pub: pubsub.NewPublisher(100*time.Millisecond, 10)})
+	server := NewServer(pubsub.NewPublisher(100*time.Millisecond, 10))
+
+	go RunPubslishServerInternal(s, server, lis)
+	return server
+}
+
+func RunPubslishServerInternal(s *grpc.Server, server *Server, lis net.Listener)  {
+	publish.RegisterDBMSServer(s, server)
 	if err := s.Serve(lis); err != nil {
 		log.Fatal("订阅服务模块启动失败!", zap.Any("err", err))
 	}

@@ -47,9 +47,9 @@
     <!--
     <el-table-column type="selection" width="55"></el-table-column>
     -->
-    <el-table-column label="ID" prop="sentinel_id" width="120"></el-table-column> 
+    <el-table-column label="ID" prop="sentinel_id" width="60"></el-table-column> 
     
-    <el-table-column label="RunID" prop="run_id" width="120"></el-table-column> 
+    <el-table-column label="RunID" prop="run_id" width="120"></el-table-column>
     
     <el-table-column label="哨兵集群" prop="sentinel_cluster_id" width="120">
         <template slot-scope="scope">
@@ -61,19 +61,30 @@
     
     <el-table-column label="IP" prop="ip" width="120"></el-table-column> 
     
-    <el-table-column label="port" prop="port" width="120"></el-table-column> 
+    <el-table-column label="port" prop="port" width="80"></el-table-column> 
     
-    <el-table-column label="CurrentEpoch" prop="current_epoch" width="120"></el-table-column> 
+    <el-table-column label="CurrentEpoch" prop="current_epoch" width="110"></el-table-column> 
     
-    <el-table-column label="ConfigEpoch" prop="config_epoch" width="120"></el-table-column> 
-    
+    <el-table-column label="ConfigEpoch" prop="config_epoch" width="110"></el-table-column> 
+
+    <el-table-column label="状态" prop="online" width="80">
+      <template slot-scope="scope">
+            <span v-if="scope.row.online === true"> 
+              <el-button type="success" round  size="mini" slot="reference">在线</el-button>
+            </span>
+            <span v-else-if="scope.row.online === false">
+              <el-button type="info" round  size="mini" slot="reference">离线</el-button>
+            </span>
+      </template>
+    </el-table-column>
+
       <el-table-column label="按钮组">
         <template slot-scope="scope">
           
           <!-- 
             <el-button class="table-button" @click="updateSentinelInfo(scope.row)" size="small" type="primary" icon="el-icon-edit">变更</el-button>
           -->
-          <el-popover placement="top" width="160" v-model="scope.row.visible">
+          <el-popover placement="top" width="120" v-model="scope.row.visible">
             <p>确定要删除吗？</p>
             <div style="text-align: right; margin: 0">
               <el-button size="mini" type="text" @click="scope.row.visible = false">取消</el-button>
