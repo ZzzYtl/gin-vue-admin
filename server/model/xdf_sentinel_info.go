@@ -11,7 +11,7 @@ type SentinelInfo struct {
       Port  int `json:"port" form:"port" gorm:"column:port;comment:"`
       CurrentEpoch  int `json:"current_epoch" form:"current_epoch" gorm:"column:current_epoch;comment:"`
       ConfigEpoch  int `json:"config_epoch" form:"config_epoch" gorm:"column:config_epoch;comment:"`
-      OnLine  bool `json:"online" form:"online"`
+      OnLine  bool `json:"online" form:"online" gorm:"-"`
 }
 
 

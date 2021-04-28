@@ -136,8 +136,9 @@ type PubsubMessage struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AddDbCluster *AddDBCluster `protobuf:"bytes,1,opt,name=add_db_cluster,json=addDbCluster,proto3" json:"add_db_cluster,omitempty"`
-	DelDbCluster *DelDBCluster `protobuf:"bytes,2,opt,name=del_db_cluster,json=delDbCluster,proto3" json:"del_db_cluster,omitempty"`
+	AddDbCluster           *AddDBCluster          `protobuf:"bytes,1,opt,name=add_db_cluster,json=addDbCluster,proto3" json:"add_db_cluster,omitempty"`
+	DelDbCluster           *DelDBCluster          `protobuf:"bytes,2,opt,name=del_db_cluster,json=delDbCluster,proto3" json:"del_db_cluster,omitempty"`
+	ChangeOldMaster_2Slave *ChangeOldMaster2Slave `protobuf:"bytes,3,opt,name=change_old_master_2_slave,json=changeOldMaster2Slave,proto3" json:"change_old_master_2_slave,omitempty"`
 }
 
 func (x *PubsubMessage) Reset() {
@@ -182,6 +183,13 @@ func (x *PubsubMessage) GetAddDbCluster() *AddDBCluster {
 func (x *PubsubMessage) GetDelDbCluster() *DelDBCluster {
 	if x != nil {
 		return x.DelDbCluster
+	}
+	return nil
+}
+
+func (x *PubsubMessage) GetChangeOldMaster_2Slave() *ChangeOldMaster2Slave {
+	if x != nil {
+		return x.ChangeOldMaster_2Slave
 	}
 	return nil
 }
@@ -280,6 +288,61 @@ func (x *DelDBCluster) GetDbClusterName() string {
 	return ""
 }
 
+type ChangeOldMaster2Slave struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	DbClusterName string `protobuf:"bytes,1,opt,name=db_cluster_name,json=dbClusterName,proto3" json:"db_cluster_name,omitempty"`
+	OldMasterIp   string `protobuf:"bytes,2,opt,name=old_master_ip,json=oldMasterIp,proto3" json:"old_master_ip,omitempty"`
+}
+
+func (x *ChangeOldMaster2Slave) Reset() {
+	*x = ChangeOldMaster2Slave{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_publish_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ChangeOldMaster2Slave) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangeOldMaster2Slave) ProtoMessage() {}
+
+func (x *ChangeOldMaster2Slave) ProtoReflect() protoreflect.Message {
+	mi := &file_publish_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangeOldMaster2Slave.ProtoReflect.Descriptor instead.
+func (*ChangeOldMaster2Slave) Descriptor() ([]byte, []int) {
+	return file_publish_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ChangeOldMaster2Slave) GetDbClusterName() string {
+	if x != nil {
+		return x.DbClusterName
+	}
+	return ""
+}
+
+func (x *ChangeOldMaster2Slave) GetOldMasterIp() string {
+	if x != nil {
+		return x.OldMasterIp
+	}
+	return ""
+}
+
 type PublishRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -292,7 +355,7 @@ type PublishRequest struct {
 func (x *PublishRequest) Reset() {
 	*x = PublishRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[4]
+		mi := &file_publish_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -305,7 +368,7 @@ func (x *PublishRequest) String() string {
 func (*PublishRequest) ProtoMessage() {}
 
 func (x *PublishRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[4]
+	mi := &file_publish_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +381,7 @@ func (x *PublishRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishRequest.ProtoReflect.Descriptor instead.
 func (*PublishRequest) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{4}
+	return file_publish_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PublishRequest) GetTopic() *Topic {
@@ -339,12 +402,14 @@ type PublishResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Result uint32 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 }
 
 func (x *PublishResponse) Reset() {
 	*x = PublishResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[5]
+		mi := &file_publish_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -357,7 +422,7 @@ func (x *PublishResponse) String() string {
 func (*PublishResponse) ProtoMessage() {}
 
 func (x *PublishResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[5]
+	mi := &file_publish_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -370,7 +435,14 @@ func (x *PublishResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishResponse.ProtoReflect.Descriptor instead.
 func (*PublishResponse) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{5}
+	return file_publish_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *PublishResponse) GetResult() uint32 {
+	if x != nil {
+		return x.Result
+	}
+	return 0
 }
 
 type GetConfigReq struct {
@@ -378,13 +450,14 @@ type GetConfigReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Port uint32 `protobuf:"varint,1,opt,name=port,proto3" json:"port,omitempty"`
+	Ip   string `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
+	Port uint32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
 }
 
 func (x *GetConfigReq) Reset() {
 	*x = GetConfigReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[6]
+		mi := &file_publish_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -397,7 +470,7 @@ func (x *GetConfigReq) String() string {
 func (*GetConfigReq) ProtoMessage() {}
 
 func (x *GetConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[6]
+	mi := &file_publish_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -410,7 +483,14 @@ func (x *GetConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfigReq.ProtoReflect.Descriptor instead.
 func (*GetConfigReq) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{6}
+	return file_publish_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetConfigReq) GetIp() string {
+	if x != nil {
+		return x.Ip
+	}
+	return ""
 }
 
 func (x *GetConfigReq) GetPort() uint32 {
@@ -435,7 +515,7 @@ type Config struct {
 func (x *Config) Reset() {
 	*x = Config{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[7]
+		mi := &file_publish_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -448,7 +528,7 @@ func (x *Config) String() string {
 func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[7]
+	mi := &file_publish_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -461,7 +541,7 @@ func (x *Config) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config.ProtoReflect.Descriptor instead.
 func (*Config) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{7}
+	return file_publish_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Config) GetCurrentEpoch() uint64 {
@@ -512,7 +592,7 @@ type SentinelConfig struct {
 func (x *SentinelConfig) Reset() {
 	*x = SentinelConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[8]
+		mi := &file_publish_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -525,7 +605,7 @@ func (x *SentinelConfig) String() string {
 func (*SentinelConfig) ProtoMessage() {}
 
 func (x *SentinelConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[8]
+	mi := &file_publish_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -538,7 +618,7 @@ func (x *SentinelConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SentinelConfig.ProtoReflect.Descriptor instead.
 func (*SentinelConfig) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{8}
+	return file_publish_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *SentinelConfig) GetRunId() string {
@@ -579,7 +659,7 @@ type DBClusterConfig struct {
 func (x *DBClusterConfig) Reset() {
 	*x = DBClusterConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[9]
+		mi := &file_publish_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -592,7 +672,7 @@ func (x *DBClusterConfig) String() string {
 func (*DBClusterConfig) ProtoMessage() {}
 
 func (x *DBClusterConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[9]
+	mi := &file_publish_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -605,7 +685,7 @@ func (x *DBClusterConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DBClusterConfig.ProtoReflect.Descriptor instead.
 func (*DBClusterConfig) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{9}
+	return file_publish_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DBClusterConfig) GetName() string {
@@ -670,7 +750,7 @@ type DBConfig struct {
 func (x *DBConfig) Reset() {
 	*x = DBConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[10]
+		mi := &file_publish_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -683,7 +763,7 @@ func (x *DBConfig) String() string {
 func (*DBConfig) ProtoMessage() {}
 
 func (x *DBConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[10]
+	mi := &file_publish_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -696,7 +776,7 @@ func (x *DBConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DBConfig.ProtoReflect.Descriptor instead.
 func (*DBConfig) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{10}
+	return file_publish_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DBConfig) GetIp() string {
@@ -732,7 +812,7 @@ type GetConfigAck struct {
 func (x *GetConfigAck) Reset() {
 	*x = GetConfigAck{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[11]
+		mi := &file_publish_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -745,7 +825,7 @@ func (x *GetConfigAck) String() string {
 func (*GetConfigAck) ProtoMessage() {}
 
 func (x *GetConfigAck) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[11]
+	mi := &file_publish_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -758,7 +838,7 @@ func (x *GetConfigAck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfigAck.ProtoReflect.Descriptor instead.
 func (*GetConfigAck) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{11}
+	return file_publish_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetConfigAck) GetResult() uint32 {
@@ -788,7 +868,7 @@ type SwitchDBClusterReq struct {
 func (x *SwitchDBClusterReq) Reset() {
 	*x = SwitchDBClusterReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[12]
+		mi := &file_publish_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -801,7 +881,7 @@ func (x *SwitchDBClusterReq) String() string {
 func (*SwitchDBClusterReq) ProtoMessage() {}
 
 func (x *SwitchDBClusterReq) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[12]
+	mi := &file_publish_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -814,7 +894,7 @@ func (x *SwitchDBClusterReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SwitchDBClusterReq.ProtoReflect.Descriptor instead.
 func (*SwitchDBClusterReq) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{12}
+	return file_publish_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *SwitchDBClusterReq) GetClusterName() string {
@@ -849,7 +929,7 @@ type SwitchDBClusterAck struct {
 func (x *SwitchDBClusterAck) Reset() {
 	*x = SwitchDBClusterAck{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[13]
+		mi := &file_publish_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -862,7 +942,7 @@ func (x *SwitchDBClusterAck) String() string {
 func (*SwitchDBClusterAck) ProtoMessage() {}
 
 func (x *SwitchDBClusterAck) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[13]
+	mi := &file_publish_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -875,7 +955,7 @@ func (x *SwitchDBClusterAck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SwitchDBClusterAck.ProtoReflect.Descriptor instead.
 func (*SwitchDBClusterAck) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{13}
+	return file_publish_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *SwitchDBClusterAck) GetResult() uint32 {
@@ -900,7 +980,7 @@ type SyncSentinelConfigReq struct {
 func (x *SyncSentinelConfigReq) Reset() {
 	*x = SyncSentinelConfigReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[14]
+		mi := &file_publish_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -913,7 +993,7 @@ func (x *SyncSentinelConfigReq) String() string {
 func (*SyncSentinelConfigReq) ProtoMessage() {}
 
 func (x *SyncSentinelConfigReq) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[14]
+	mi := &file_publish_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -926,7 +1006,7 @@ func (x *SyncSentinelConfigReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SyncSentinelConfigReq.ProtoReflect.Descriptor instead.
 func (*SyncSentinelConfigReq) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{14}
+	return file_publish_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *SyncSentinelConfigReq) GetRunId() string {
@@ -975,7 +1055,7 @@ type SyncSentinelConfigAck struct {
 func (x *SyncSentinelConfigAck) Reset() {
 	*x = SyncSentinelConfigAck{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[15]
+		mi := &file_publish_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -988,7 +1068,7 @@ func (x *SyncSentinelConfigAck) String() string {
 func (*SyncSentinelConfigAck) ProtoMessage() {}
 
 func (x *SyncSentinelConfigAck) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[15]
+	mi := &file_publish_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1001,7 +1081,7 @@ func (x *SyncSentinelConfigAck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SyncSentinelConfigAck.ProtoReflect.Descriptor instead.
 func (*SyncSentinelConfigAck) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{15}
+	return file_publish_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *SyncSentinelConfigAck) GetResult() uint32 {
@@ -1023,7 +1103,7 @@ type HeartBeatReq struct {
 func (x *HeartBeatReq) Reset() {
 	*x = HeartBeatReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[16]
+		mi := &file_publish_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1036,7 +1116,7 @@ func (x *HeartBeatReq) String() string {
 func (*HeartBeatReq) ProtoMessage() {}
 
 func (x *HeartBeatReq) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[16]
+	mi := &file_publish_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1049,7 +1129,7 @@ func (x *HeartBeatReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HeartBeatReq.ProtoReflect.Descriptor instead.
 func (*HeartBeatReq) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{16}
+	return file_publish_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *HeartBeatReq) GetIp() string {
@@ -1075,7 +1155,7 @@ type HeartBeatAck struct {
 func (x *HeartBeatAck) Reset() {
 	*x = HeartBeatAck{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_publish_proto_msgTypes[17]
+		mi := &file_publish_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1088,7 +1168,7 @@ func (x *HeartBeatAck) String() string {
 func (*HeartBeatAck) ProtoMessage() {}
 
 func (x *HeartBeatAck) ProtoReflect() protoreflect.Message {
-	mi := &file_publish_proto_msgTypes[17]
+	mi := &file_publish_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1101,7 +1181,7 @@ func (x *HeartBeatAck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HeartBeatAck.ProtoReflect.Descriptor instead.
 func (*HeartBeatAck) Descriptor() ([]byte, []int) {
-	return file_publish_proto_rawDescGZIP(), []int{17}
+	return file_publish_proto_rawDescGZIP(), []int{18}
 }
 
 var File_publish_proto protoreflect.FileDescriptor
@@ -1111,31 +1191,45 @@ var file_publish_proto_rawDesc = []byte{
 	0x37, 0x0a, 0x05, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x2e, 0x0a, 0x13, 0x73, 0x65, 0x6e, 0x74,
 	0x69, 0x6e, 0x65, 0x6c, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x11, 0x73, 0x65, 0x6e, 0x74, 0x69, 0x6e, 0x65, 0x6c, 0x43,
-	0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x49, 0x64, 0x22, 0x79, 0x0a, 0x0d, 0x50, 0x75, 0x62, 0x73,
-	0x75, 0x62, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x33, 0x0a, 0x0e, 0x61, 0x64, 0x64,
-	0x5f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x0d, 0x2e, 0x41, 0x64, 0x64, 0x44, 0x42, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72,
-	0x52, 0x0c, 0x61, 0x64, 0x64, 0x44, 0x62, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12, 0x33,
-	0x0a, 0x0e, 0x64, 0x65, 0x6c, 0x5f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x44, 0x65, 0x6c, 0x44, 0x42, 0x43, 0x6c,
-	0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x0c, 0x64, 0x65, 0x6c, 0x44, 0x62, 0x43, 0x6c, 0x75, 0x73,
-	0x74, 0x65, 0x72, 0x22, 0x4c, 0x0a, 0x0c, 0x41, 0x64, 0x64, 0x44, 0x42, 0x43, 0x6c, 0x75, 0x73,
-	0x74, 0x65, 0x72, 0x12, 0x3c, 0x0a, 0x11, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65,
-	0x72, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10,
-	0x2e, 0x44, 0x42, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
-	0x52, 0x0f, 0x64, 0x62, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x66, 0x69,
-	0x67, 0x22, 0x36, 0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x44, 0x42, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
-	0x72, 0x12, 0x26, 0x0a, 0x0f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x5f,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x64, 0x62, 0x43, 0x6c,
-	0x75, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x58, 0x0a, 0x0e, 0x50, 0x75, 0x62,
-	0x6c, 0x69, 0x73, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x05, 0x74,
-	0x6f, 0x70, 0x69, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x54, 0x6f, 0x70,
-	0x69, 0x63, 0x52, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x28, 0x0a, 0x07, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x50, 0x75, 0x62,
-	0x73, 0x75, 0x62, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x22, 0x11, 0x0a, 0x0f, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x22, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x01,
+	0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x49, 0x64, 0x22, 0xcb, 0x01, 0x0a, 0x0d, 0x50, 0x75, 0x62,
+	0x73, 0x75, 0x62, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x33, 0x0a, 0x0e, 0x61, 0x64,
+	0x64, 0x5f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x41, 0x64, 0x64, 0x44, 0x42, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
+	0x72, 0x52, 0x0c, 0x61, 0x64, 0x64, 0x44, 0x62, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12,
+	0x33, 0x0a, 0x0e, 0x64, 0x65, 0x6c, 0x5f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65,
+	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x44, 0x65, 0x6c, 0x44, 0x42, 0x43,
+	0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x0c, 0x64, 0x65, 0x6c, 0x44, 0x62, 0x43, 0x6c, 0x75,
+	0x73, 0x74, 0x65, 0x72, 0x12, 0x50, 0x0a, 0x19, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x6f,
+	0x6c, 0x64, 0x5f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x32, 0x5f, 0x73, 0x6c, 0x61, 0x76,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65,
+	0x4f, 0x6c, 0x64, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x32, 0x53, 0x6c, 0x61, 0x76, 0x65, 0x52,
+	0x15, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x4f, 0x6c, 0x64, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72,
+	0x32, 0x53, 0x6c, 0x61, 0x76, 0x65, 0x22, 0x4c, 0x0a, 0x0c, 0x41, 0x64, 0x64, 0x44, 0x42, 0x43,
+	0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12, 0x3c, 0x0a, 0x11, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75,
+	0x73, 0x74, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x10, 0x2e, 0x44, 0x42, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x52, 0x0f, 0x64, 0x62, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x22, 0x36, 0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x44, 0x42, 0x43, 0x6c, 0x75,
+	0x73, 0x74, 0x65, 0x72, 0x12, 0x26, 0x0a, 0x0f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73, 0x74,
+	0x65, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x64,
+	0x62, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x63, 0x0a, 0x15,
+	0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x4f, 0x6c, 0x64, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x32,
+	0x53, 0x6c, 0x61, 0x76, 0x65, 0x12, 0x26, 0x0a, 0x0f, 0x64, 0x62, 0x5f, 0x63, 0x6c, 0x75, 0x73,
+	0x74, 0x65, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d,
+	0x64, 0x62, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x22, 0x0a,
+	0x0d, 0x6f, 0x6c, 0x64, 0x5f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x69, 0x70, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6f, 0x6c, 0x64, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x49,
+	0x70, 0x22, 0x58, 0x0a, 0x0e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x06, 0x2e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x52, 0x05, 0x74, 0x6f, 0x70, 0x69,
+	0x63, 0x12, 0x28, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x50, 0x75, 0x62, 0x73, 0x75, 0x62, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x29, 0x0a, 0x0f, 0x50,
+	0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16,
+	0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06,
+	0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x32, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x52, 0x65, 0x71, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x22, 0xfc, 0x01, 0x0a, 0x06, 0x43,
 	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74,
 	0x5f, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x63, 0x75,
@@ -1248,57 +1342,59 @@ func file_publish_proto_rawDescGZIP() []byte {
 }
 
 var file_publish_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_publish_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_publish_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_publish_proto_goTypes = []interface{}{
 	(DBType)(0),                   // 0: DBType
 	(*Topic)(nil),                 // 1: Topic
 	(*PubsubMessage)(nil),         // 2: PubsubMessage
 	(*AddDBCluster)(nil),          // 3: AddDBCluster
 	(*DelDBCluster)(nil),          // 4: DelDBCluster
-	(*PublishRequest)(nil),        // 5: PublishRequest
-	(*PublishResponse)(nil),       // 6: PublishResponse
-	(*GetConfigReq)(nil),          // 7: GetConfigReq
-	(*Config)(nil),                // 8: Config
-	(*SentinelConfig)(nil),        // 9: SentinelConfig
-	(*DBClusterConfig)(nil),       // 10: DBClusterConfig
-	(*DBConfig)(nil),              // 11: DBConfig
-	(*GetConfigAck)(nil),          // 12: GetConfigAck
-	(*SwitchDBClusterReq)(nil),    // 13: SwitchDBClusterReq
-	(*SwitchDBClusterAck)(nil),    // 14: SwitchDBClusterAck
-	(*SyncSentinelConfigReq)(nil), // 15: SyncSentinelConfigReq
-	(*SyncSentinelConfigAck)(nil), // 16: SyncSentinelConfigAck
-	(*HeartBeatReq)(nil),          // 17: HeartBeatReq
-	(*HeartBeatAck)(nil),          // 18: HeartBeatAck
+	(*ChangeOldMaster2Slave)(nil), // 5: ChangeOldMaster2Slave
+	(*PublishRequest)(nil),        // 6: PublishRequest
+	(*PublishResponse)(nil),       // 7: PublishResponse
+	(*GetConfigReq)(nil),          // 8: GetConfigReq
+	(*Config)(nil),                // 9: Config
+	(*SentinelConfig)(nil),        // 10: SentinelConfig
+	(*DBClusterConfig)(nil),       // 11: DBClusterConfig
+	(*DBConfig)(nil),              // 12: DBConfig
+	(*GetConfigAck)(nil),          // 13: GetConfigAck
+	(*SwitchDBClusterReq)(nil),    // 14: SwitchDBClusterReq
+	(*SwitchDBClusterAck)(nil),    // 15: SwitchDBClusterAck
+	(*SyncSentinelConfigReq)(nil), // 16: SyncSentinelConfigReq
+	(*SyncSentinelConfigAck)(nil), // 17: SyncSentinelConfigAck
+	(*HeartBeatReq)(nil),          // 18: HeartBeatReq
+	(*HeartBeatAck)(nil),          // 19: HeartBeatAck
 }
 var file_publish_proto_depIdxs = []int32{
 	3,  // 0: PubsubMessage.add_db_cluster:type_name -> AddDBCluster
 	4,  // 1: PubsubMessage.del_db_cluster:type_name -> DelDBCluster
-	10, // 2: AddDBCluster.db_cluster_config:type_name -> DBClusterConfig
-	1,  // 3: PublishRequest.topic:type_name -> Topic
-	2,  // 4: PublishRequest.message:type_name -> PubsubMessage
-	9,  // 5: Config.sentinel_configs:type_name -> SentinelConfig
-	10, // 6: Config.db_cluster_configs:type_name -> DBClusterConfig
-	11, // 7: DBClusterConfig.db_configs:type_name -> DBConfig
-	0,  // 8: DBConfig.type:type_name -> DBType
-	8,  // 9: GetConfigAck.config:type_name -> Config
-	11, // 10: SwitchDBClusterReq.dbs:type_name -> DBConfig
-	5,  // 11: DBMS.Publish:input_type -> PublishRequest
-	1,  // 12: DBMS.Subscribe:input_type -> Topic
-	7,  // 13: DBMS.GetConfig:input_type -> GetConfigReq
-	13, // 14: DBMS.SwitchDBCluster:input_type -> SwitchDBClusterReq
-	15, // 15: DBMS.SyncSentinelConfig:input_type -> SyncSentinelConfigReq
-	17, // 16: DBMS.HeartBeat:input_type -> HeartBeatReq
-	6,  // 17: DBMS.Publish:output_type -> PublishResponse
-	2,  // 18: DBMS.Subscribe:output_type -> PubsubMessage
-	12, // 19: DBMS.GetConfig:output_type -> GetConfigAck
-	14, // 20: DBMS.SwitchDBCluster:output_type -> SwitchDBClusterAck
-	16, // 21: DBMS.SyncSentinelConfig:output_type -> SyncSentinelConfigAck
-	18, // 22: DBMS.HeartBeat:output_type -> HeartBeatAck
-	17, // [17:23] is the sub-list for method output_type
-	11, // [11:17] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	5,  // 2: PubsubMessage.change_old_master_2_slave:type_name -> ChangeOldMaster2Slave
+	11, // 3: AddDBCluster.db_cluster_config:type_name -> DBClusterConfig
+	1,  // 4: PublishRequest.topic:type_name -> Topic
+	2,  // 5: PublishRequest.message:type_name -> PubsubMessage
+	10, // 6: Config.sentinel_configs:type_name -> SentinelConfig
+	11, // 7: Config.db_cluster_configs:type_name -> DBClusterConfig
+	12, // 8: DBClusterConfig.db_configs:type_name -> DBConfig
+	0,  // 9: DBConfig.type:type_name -> DBType
+	9,  // 10: GetConfigAck.config:type_name -> Config
+	12, // 11: SwitchDBClusterReq.dbs:type_name -> DBConfig
+	6,  // 12: DBMS.Publish:input_type -> PublishRequest
+	1,  // 13: DBMS.Subscribe:input_type -> Topic
+	8,  // 14: DBMS.GetConfig:input_type -> GetConfigReq
+	14, // 15: DBMS.SwitchDBCluster:input_type -> SwitchDBClusterReq
+	16, // 16: DBMS.SyncSentinelConfig:input_type -> SyncSentinelConfigReq
+	18, // 17: DBMS.HeartBeat:input_type -> HeartBeatReq
+	7,  // 18: DBMS.Publish:output_type -> PublishResponse
+	2,  // 19: DBMS.Subscribe:output_type -> PubsubMessage
+	13, // 20: DBMS.GetConfig:output_type -> GetConfigAck
+	15, // 21: DBMS.SwitchDBCluster:output_type -> SwitchDBClusterAck
+	17, // 22: DBMS.SyncSentinelConfig:output_type -> SyncSentinelConfigAck
+	19, // 23: DBMS.HeartBeat:output_type -> HeartBeatAck
+	18, // [18:24] is the sub-list for method output_type
+	12, // [12:18] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_publish_proto_init() }
@@ -1356,7 +1452,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PublishRequest); i {
+			switch v := v.(*ChangeOldMaster2Slave); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1368,7 +1464,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PublishResponse); i {
+			switch v := v.(*PublishRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1380,7 +1476,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetConfigReq); i {
+			switch v := v.(*PublishResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1392,7 +1488,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config); i {
+			switch v := v.(*GetConfigReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1404,7 +1500,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SentinelConfig); i {
+			switch v := v.(*Config); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1416,7 +1512,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DBClusterConfig); i {
+			switch v := v.(*SentinelConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1428,7 +1524,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DBConfig); i {
+			switch v := v.(*DBClusterConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1440,7 +1536,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetConfigAck); i {
+			switch v := v.(*DBConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1452,7 +1548,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SwitchDBClusterReq); i {
+			switch v := v.(*GetConfigAck); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1464,7 +1560,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SwitchDBClusterAck); i {
+			switch v := v.(*SwitchDBClusterReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1476,7 +1572,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SyncSentinelConfigReq); i {
+			switch v := v.(*SwitchDBClusterAck); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1488,7 +1584,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SyncSentinelConfigAck); i {
+			switch v := v.(*SyncSentinelConfigReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1500,7 +1596,7 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HeartBeatReq); i {
+			switch v := v.(*SyncSentinelConfigAck); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1512,6 +1608,18 @@ func file_publish_proto_init() {
 			}
 		}
 		file_publish_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HeartBeatReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_publish_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*HeartBeatAck); i {
 			case 0:
 				return &v.state
@@ -1530,7 +1638,7 @@ func file_publish_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_publish_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   18,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

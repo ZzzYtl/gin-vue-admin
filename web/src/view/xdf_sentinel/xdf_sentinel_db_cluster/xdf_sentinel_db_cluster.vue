@@ -49,9 +49,17 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="角色:"> 
-                {{filterDict(domain.role_id,"type")}}
+              {{filterDict(domain.type,"db_role")}}
             </el-form-item>
           </el-col>
+
+          <el-col :span="6">
+            <el-button v-if="domain.type === 4"
+              @click="ChangeDBRole(scope.row, domain)"
+              size="small"
+              type="danger">变更为从库</el-button>
+          </el-col>
+
         </el-row>
         </el-form>
       </template>
@@ -102,7 +110,7 @@
               <el-button type="primary" size="mini" @click="deleteSentinelDBClusterInfo(scope.row)">确定</el-button>
             </div>
             <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference">删除</el-button>
-          </el-popover>
+          </el-popover>            
         </template>
       </el-table-column>
     </el-table>
@@ -163,6 +171,7 @@
 import {
     createSentinelDBClusterInfo,
     deleteSentinelDBClusterInfo,
+    changeOldMaster2Slave,
     deleteSentinelDBClusterInfoByIds,
     updateSentinelDBClusterInfo,
     findSentinelDBClusterInfo,
@@ -203,6 +212,7 @@ export default {
       listApi: getSentinelDBClusterInfoList,
       dialogFormVisible: false,
       visible: false,
+      row_visible: false,
       type: "",
       sentinelClusters: SentinelClusters,
       clusters: Clusters,
@@ -348,8 +358,41 @@ export default {
     openDialog() {
       this.type = "create";
       this.dialogFormVisible = true;
+    },
+
+    // 提升旧主为从库
+    ChangeDBRole(row, domain) {
+      this.$confirm("此操作将旧主库提升为从库, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+          const res = await changeOldMaster2Slave({id:row.id, ip: domain.ip});
+          if (res.code == 0) {
+            this.$message({
+              type: "success",
+              message: "提升成功!"
+            });
+            if (this.tableData.length == 1) {
+              this.page--;
+            }
+            this.getTableData();
+          } else {
+            this.$message({
+              type: "warning",
+              message: res.msg
+            })
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消提升操作"
+          });
+        });
     }
   },
+
   async created() {
     var rst = await getAllSentinelClusters();
     if (rst.code == 0) {

@@ -8,6 +8,7 @@ message Topic {
 message PubsubMessage {
   AddDBCluster add_db_cluster = 1;
   DelDBCluster del_db_cluster = 2;
+  ChangeOldMaster2Slave change_old_master_2_slave = 3;
 }
 
 message AddDBCluster {
@@ -18,15 +19,22 @@ message DelDBCluster {
   string db_cluster_name = 1;
 }
 
+message ChangeOldMaster2Slave {
+  string  db_cluster_name = 1;
+  string  old_master_ip = 2;
+}
+
 message PublishRequest {
   Topic topic = 1;
   PubsubMessage message = 2;
 }
 message PublishResponse {
+	uint32 result = 1;
 }
 
 message GetConfigReq {
-  uint32 port = 1;
+  string ip = 1;
+  uint32 port = 2;
 }
 
 message Config {

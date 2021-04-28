@@ -25,7 +25,6 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 		return errors.New("this dbcluster is already exist")
 	}
 
-
 	logicCluster := model.LogicCluster{
 		LogicClusterID: SentinelDBCluster.LogicClusterID,
 	}
@@ -41,7 +40,7 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 
 	var dbs []publish.DBConfig
 	var nodes []model.Node
-	err = global.GVA_DB.Where("tag_id = ?",  SentinelDBCluster.ClusterID).Find(&nodes).Error
+	err = global.GVA_DB.Where("tag_id = ?", SentinelDBCluster.ClusterID).Find(&nodes).Error
 	if err != nil {
 		return err
 	}
@@ -52,7 +51,7 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 		})
 	}
 
-	backUp :=  model.BackUpDB{
+	backUp := model.BackUpDB{
 		BackUpID: dbClusterInfo.BackUpID,
 	}
 	err = global.GVA_DB.Where("backup_id = ?", dbClusterInfo.BackUpID).Find(&backUp).Error
@@ -94,6 +93,56 @@ func CreateSentinelDBClusterInfo(SentinelDBCluster model.SentinelDBClusterInfo) 
 		}
 		global.GVA_PUBER.Pub(uint32(SentinelDBCluster.SentinelClusterID),
 			&publish.PubsubMessage{AddDbCluster: msg})
+	}
+	return err
+}
+
+type OldMasterForm struct {
+	ID int    `json:"id" form:"id"`
+	IP string `json:"ip" form:"ip"`
+}
+
+func ChangeOldMaster2Slave(changeInfo OldMasterForm) (err error) {
+	sentinelDBClu := model.SentinelDBClusterInfo{
+		ID:                changeInfo.ID,
+	}
+	err = global.GVA_DB.First(&sentinelDBClu).Error
+	if err != nil {
+		return err
+	}
+
+	var dbs []publish.DBConfig
+	if json.Unmarshal([]byte(sentinelDBClu.Dbs), &dbs) != nil {
+		return errors.New("cant find this old master")
+	}
+
+	find := false
+	for i := range dbs {
+		if dbs[i].Ip == changeInfo.IP && dbs[i].Type == publish.DBType_OldMaster {
+			find = true
+			dbs[i].Type = publish.DBType_Slave
+			break
+		}
+	}
+
+	if find == false {
+		return errors.New("cant find this old master...")
+	}
+	data, err := json.Marshal(dbs)
+	if err != nil {
+		return err
+	}
+	sentinelDBClu.Dbs = string(data)
+
+	msg := &publish.ChangeOldMaster2Slave{
+		DbClusterName: sentinelDBClu.GetDBClusterName(),
+		OldMasterIp:   changeInfo.IP,
+	}
+
+	_, err = global.GVA_PUBER.Pub(uint32(sentinelDBClu.SentinelClusterID),
+		&publish.PubsubMessage{ChangeOldMaster_2Slave: msg})
+	if err == nil {
+		err = global.GVA_DB.Save(&sentinelDBClu).Error
 	}
 	return err
 }

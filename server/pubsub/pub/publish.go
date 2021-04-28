@@ -11,17 +11,14 @@ type Puber struct {
 	pubClient publish.DBMSClient
 }
 
-func (puber *Puber)Pub(sentinelClusterID uint32, message *publish.PubsubMessage) error {
-	_, err := puber.pubClient.Publish(context.Background(), &publish.PublishRequest{
+func (puber *Puber)Pub(sentinelClusterID uint32, message *publish.PubsubMessage) (*publish.PublishResponse, error) {
+	rsp, err := puber.pubClient.Publish(context.Background(), &publish.PublishRequest{
 		Topic: &publish.Topic{
 			SentinelClusterId: sentinelClusterID,
 		},
 		Message: message,
 	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	return err
+	return rsp, err
 }
 
 func CreatePuber()  *Puber {

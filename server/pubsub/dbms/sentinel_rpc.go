@@ -6,6 +6,7 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	publish "gin-vue-admin/pubsub/protocal"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/peer"
 	"net"
 	"sync"
@@ -44,14 +45,20 @@ func (s *RpcServer) IsSentinelOnLine(ip string, port uint32) bool {
 }
 
 func (s *RpcServer) GetConfig(c context.Context, req *publish.GetConfigReq) (*publish.GetConfigAck, error) {
+	logrus.Info(req.String())
 	var addr string
-	if pr, ok := peer.FromContext(c); ok {
-		if tcpAddr, ok := pr.Addr.(*net.TCPAddr); ok {
-			addr = tcpAddr.IP.String()
-		} else {
-			addr = pr.Addr.String()
+	if len(req.Ip) != 0 {
+		addr = req.Ip
+	} else {
+		if pr, ok := peer.FromContext(c); ok {
+			if tcpAddr, ok := pr.Addr.(*net.TCPAddr); ok {
+				addr = tcpAddr.IP.String()
+			} else {
+				addr = pr.Addr.String()
+			}
 		}
 	}
+
 	var sentinel model.SentinelInfo
 	err := global.GVA_DB.Where("ip = ? AND port = ?", addr, req.Port).First(&sentinel).Error
 	if err != nil {

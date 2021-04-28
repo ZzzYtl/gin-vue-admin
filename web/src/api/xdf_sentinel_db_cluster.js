@@ -33,6 +33,14 @@ export const createSentinelDBClusterInfo = (data) => {
      })
  }
 
+ export const changeOldMaster2Slave = (data) => {
+    return service({
+        url: "/SentinelDBCluster/changeOldMaster2Slave",
+        method: 'post',
+        data
+    })
+}
+
 // @Tags SentinelDBClusterInfo
 // @Summary 删除SentinelDBClusterInfo
 // @Security ApiKeyAuth

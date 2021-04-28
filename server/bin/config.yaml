@@ -54,7 +54,7 @@ captcha:
 
 # mysql connect configuration
 mysql:
-  path: '10.155.19.130:3306'
+  path: '10.155.19.130:3311'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
   db-name: 'dbms'
   username: 'dba'

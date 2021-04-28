@@ -2,12 +2,12 @@ package v1
 
 import (
 	"gin-vue-admin/global"
-    "gin-vue-admin/model"
-    "gin-vue-admin/model/request"
-    "gin-vue-admin/model/response"
-    "gin-vue-admin/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"gin-vue-admin/model"
+	"gin-vue-admin/model/request"
+	"gin-vue-admin/model/response"
+	"gin-vue-admin/service"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // @Tags SentinelDBClusterInfo
@@ -22,10 +22,21 @@ func CreateSentinelDBClusterInfo(c *gin.Context) {
 	var SentinelDBCluster model.SentinelDBClusterInfo
 	_ = c.ShouldBindJSON(&SentinelDBCluster)
 	if err := service.CreateSentinelDBClusterInfo(SentinelDBCluster); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
+		global.GVA_LOG.Error("创建失败!", zap.Any("err", err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
+	}
+}
+
+func ChangeOldMaster2Slave(c *gin.Context) {
+	var SentinelDBCluster service.OldMasterForm
+	_ = c.ShouldBindJSON(&SentinelDBCluster)
+	if err := service.ChangeOldMaster2Slave(SentinelDBCluster); err != nil {
+		global.GVA_LOG.Error("变更失败!", zap.Any("err", err))
+		response.FailWithMessage("变更失败", c)
+	} else {
+		response.OkWithMessage("变更成功", c)
 	}
 }
 
@@ -41,7 +52,7 @@ func DeleteSentinelDBClusterInfo(c *gin.Context) {
 	var SentinelDBCluster model.SentinelDBClusterInfo
 	_ = c.ShouldBindJSON(&SentinelDBCluster)
 	if err := service.DeleteSentinelDBClusterInfo(SentinelDBCluster); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Any("err", err))
+		global.GVA_LOG.Error("删除失败!", zap.Any("err", err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -58,9 +69,9 @@ func DeleteSentinelDBClusterInfo(c *gin.Context) {
 // @Router /SentinelDBCluster/deleteSentinelDBClusterInfoByIds [delete]
 func DeleteSentinelDBClusterInfoByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := service.DeleteSentinelDBClusterInfoByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Any("err", err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Any("err", err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -79,7 +90,7 @@ func UpdateSentinelDBClusterInfo(c *gin.Context) {
 	var SentinelDBCluster model.SentinelDBClusterInfo
 	_ = c.ShouldBindJSON(&SentinelDBCluster)
 	if err := service.UpdateSentinelDBClusterInfo(SentinelDBCluster); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Any("err", err))
+		global.GVA_LOG.Error("更新失败!", zap.Any("err", err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -98,7 +109,7 @@ func FindSentinelDBClusterInfo(c *gin.Context) {
 	var SentinelDBCluster model.SentinelDBClusterInfo
 	_ = c.ShouldBindQuery(&SentinelDBCluster)
 	if err, reSentinelDBCluster := service.GetSentinelDBClusterInfo(SentinelDBCluster.ClusterID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Any("err", err))
+		global.GVA_LOG.Error("查询失败!", zap.Any("err", err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"reSentinelDBCluster": reSentinelDBCluster}, c)
@@ -117,14 +128,14 @@ func GetSentinelDBClusterInfoList(c *gin.Context) {
 	var pageInfo request.SentinelDBClusterInfoSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := service.GetSentinelDBClusterInfoInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败", zap.Any("err", err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败", zap.Any("err", err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }
